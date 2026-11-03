@@ -1,0 +1,213 @@
+local p = {}
+local ustring = mw.ustring
+local textfit = require "Module:TextFit"
+
+-- ============================================================================
+--  Name box geometry, in em of .itembox's font-size (1em = 10px at size=1).
+--  Mirrors Template:ItemBox/styles.css:
+--    .itembox            width: 8em
+--    .itembox-name-area  height: 4.5em; padding: 0.5em 0.4em (border-box)
+--    .itembox-name       line-height: 1.2; font-size: 1.5em (overridden inline)
+--  so the name's content box is 8 - 2*0.4 = 7.2em wide and 4.5 - 2*0.5 = 3.5em
+--  tall. Only the ratio and the size limits are read from those figures: the
+--  size is emitted in cqw against .itembox-name-area, so the browser supplies
+--  the actual width. Glyph widths live in [[Module:TextFit]].
+-- ============================================================================
+local NAME_W = 7.2
+local NAME_H = 3.5
+local LINE_H = 1.2
+local MAX_EM = 1.5
+local MIN_EM = 0.8
+
+local function font_size(name)
+    name = ustring.gsub(name or "", "^%s*(.-)%s*$", "%1")
+    local max = MAX_EM / NAME_W * 100          -- 20.83cqw
+    if name == "" then return string.format("%.2fcqw", max) end
+
+    return string.format("%.2fcqw", textfit.fit(name, {
+        aspect     = NAME_H / NAME_W,
+        lineHeight = LINE_H,
+        max        = max,
+        min        = MIN_EM / NAME_W * 100,    -- 11.11cqw
+    }))
+end
+
+-- Returns the name font size as a cqw string, measured against
+-- .itembox-name-area, which [[Template:ItemBox]] makes a query container.
+function p.getFontSize(frame)
+    return font_size(frame.args[1])
+end
+
+-- User for stable per-item texture variety
+local function hash(s)
+    local h = 5381
+    for i = 1, #s do
+        h = (h * 33 + s:byte(i)) % 2147483647
+    end
+    return h
+end
+
+local function variants(name)
+    local h = hash(name or "")
+    local icon = (h % 3) + 1
+    local wear = (math.floor(h / 3) % 4) + 1
+    local tex  = (math.floor(h / 12) % 3) + 1
+    return string.format("itembox-icon-v%d itembox-wear-v%d itembox-texture-v%d",
+        icon, wear, tex)
+end
+
+function p.variants(frame)
+    return variants(frame.args[1])
+end
+
+-- ============================================================================
+--  The card itself. [[Template:ItemBox]] is a single #invoke of p.card, and
+--  modules that place many cards (e.g. [[Module:StreetBrawlItems]]) call
+--  p._card directly, so the markup lives in one place. Doing this in Lua
+--  instead of in the template's own wikitext replaced ~10 #invoke calls per
+--  card with one.
+-- ============================================================================
+
+local SLOT_CLASS = {
+    Weapon = "itembox-weapon",
+    Armor = "itembox-vitality", Vitality = "itembox-vitality",
+    Tech = "itembox-spirit", Spirit = "itembox-spirit",
+}
+local NOT_FOUND = "<span style=\"color:red;\">Item Not Found.</span>"
+
+-- Same lookup as [[Module:ItemData]]'s get_codename / get_json_item: the first
+-- active item with this name, else any item with it.
+local function find_item(data, name)
+    for k, v in pairs(data) do
+        if v["Name"] == name and (v["IsDisabled"] == false or v["IsDisabled"] == nil) then
+            return k, v
+        end
+    end
+    for k, v in pairs(data) do
+        if v["Name"] == name then
+            return k, v
+        end
+    end
+end
+
+local function is_true(v)
+    return v ~= nil and mw.text.trim(tostring(v)) == "true"
+end
+
+-- Card size in px, as {{#expr: 10 * size }} gave it.
+local function font_px(size)
+    if size == nil or mw.text.trim(size) == "" then return "10" end
+    local n = tonumber(size)
+    if n then return tostring(10 * n) end
+    return mw.getCurrentFrame():callParserFunction("#expr", "10 * " .. size)
+end
+
+-- Renders one card.
+--   name: the item's English name (as in Data:ItemData.json).
+--   opts: the template's parameters, all optional: size, showTierTag,
+--     lowGraphics, overrideDisplayName, overrideSlot, overrideTier,
+--     overrideIsActive, overrideIsImbue, overrideLinkTooltip, overrideLinkImage,
+--     overrideLinkClick. Callers that already know the item's key can pass it
+--     as opts.code to skip the lookup by name.
+-- The card's stylesheet is not included: add
+-- <templatestyles src="Template:ItemBox/styles.css" /> once per output.
+function p._card(name, opts)
+    opts = opts or {}
+    local lang = require("Module:Lang")
+    local data = mw.loadJsonData("Data:ItemData.json")
+
+    local code, item
+    if opts.code then
+        code, item = opts.code, data[opts.code]
+    else
+        code, item = find_item(data, name)
+    end
+
+    -- Display name: Lang string for the codename, else the raw name, then override.
+    local display = opts.overrideDisplayName
+    if display == nil then
+        display = code and lang.get_string({ args = { code } }) or ""
+        if mw.text.trim(display) == "" then display = name end
+    end
+
+    -- Modifier classes: slot (Weapon/Armor/Tech from data, or Weapon/Vitality/Spirit override), tier, tags.
+    local slot = opts.overrideSlot
+    if slot == nil then slot = item and item.Slot or (item == nil and NOT_FOUND) or "" end
+    local tier = opts.overrideTier
+    if tier == nil then
+        if item == nil then tier = NOT_FOUND
+        elseif item.Tier ~= nil then tier = tostring(item.Tier)
+        else tier = "" end
+    end
+    local active = opts.overrideIsActive
+    if active == nil then active = item ~= nil and item.Activation ~= "Passive" end
+    local imbue = opts.overrideIsImbue
+    if imbue == nil and item ~= nil and item.IsImbue ~= nil then imbue = tostring(item.IsImbue) end
+
+    -- lowGraphics=true is for callers that place dozens of cards on one page (the
+    -- card navboxes). It swaps the paper texture from the normal-mode multiply,
+    -- which blends two images and so is re-rasterised every scrolled frame, to a
+    -- transparent-paper overlay that is a single cacheable image. On the profiled
+    -- navbox this took the render thread's OpenGL work from ~230 ms/s to ~10 and
+    -- roughly doubled the frame rate. The wear and icon masks are clips of a
+    -- single image, not blends, so they cache once rasterised and stay at full
+    -- detail. The overlay itself is defined in [[Template:ItemBox/styles.css]] and
+    -- keyed off the same per-item texture-vN class, so a card keeps its paper
+    -- across both modes.
+    local classes = table.concat({
+        "itembox",
+        is_true(opts.showTierTag) and "itembox-show-tier" or "",
+        "itembox-tier-" .. tier,
+        SLOT_CLASS[mw.text.trim(slot)] or "",
+        is_true(active) and "itembox-active" or "",
+        is_true(imbue) and "itembox-imbue" or "",
+        variants(name),
+        is_true(opts.lowGraphics) and "itembox-lowgfx" or "",
+    }, " ")
+
+    -- Links.
+    local link_tooltip = opts.overrideLinkTooltip or name
+    local link_image = opts.overrideLinkImage or name
+    local link_click = opts.overrideLinkClick or name
+
+    return '<div class="' .. classes .. '" style="font-size:' .. font_px(opts.size) .. 'px;">\n'
+        .. '\t<div class="itembox-background">\n'
+        .. '\t\t<div class="itembox-card">\n'
+        .. '\t\t\t<div class="itembox-icon-area">\n'
+        .. '\t\t\t\t<div class="itembox-icon">[[File:' .. link_image .. '.png|160px|link=]]</div>\n'
+        .. '\t\t\t\t<div class="itembox-tier-badge">\n'
+        .. '\t\t\t\t\t<div class="itembox-tier-badge-shadow"></div>\n'
+        .. '\t\t\t\t\t<div class="itembox-tier-badge-fill"></div>\n'
+        .. '\t\t\t\t\t<div class="itembox-tier-badge-number"></div>\n'
+        .. '\t\t\t\t</div>\n'
+        .. '\t\t\t\t<div class="itembox-imbue-tag">' .. lang.get_string({ args = { "item_info_imbue" } }) .. '</div>\n'
+        .. '\t\t\t</div>\n'
+        -- container-type is inline because TemplateStyles strips it; the name's cqw size measures against this box.
+        .. '\t\t\t<div class="itembox-name-area" style="container-type: inline-size;">\n'
+        .. '\t\t\t\t<p class="itembox-name" style="font-size:' .. font_size(display) .. ';text-wrap:balance;">' .. display .. '</p>\n'
+        .. '\t\t\t</div>\n'
+        .. '\t\t\t<div class="itembox-wear"></div>\n'
+        .. '\t\t\t<div class="itembox-texture"></div>\n'
+        .. '\t\t\t<div class="itembox-bevel"></div>\n'
+        .. '\t\t\t<div class="itembox-active-tag">' .. lang.get_string({ args = { "item_info_active" } }) .. '</div>\n'
+        .. '\t\t\t<div class="itembox-outline"></div>\n'
+        .. '\t\t</div>\n'
+        .. '\t</div>\n'
+        .. '\t<div class="item-link-wrapper" data-item-name="' .. link_tooltip .. '">[[' .. link_click .. '|<span></span>]]</div>\n'
+        .. '</div>'
+end
+
+-- {{#invoke:ItemBox|card}}, called from [[Template:ItemBox]]: reads the
+-- template's own parameters.
+function p.card(frame)
+    local args = frame:getParent().args
+    local opts = {}
+    for _, k in ipairs({ "size", "showTierTag", "lowGraphics", "overrideDisplayName", "overrideSlot",
+            "overrideTier", "overrideIsActive", "overrideIsImbue", "overrideLinkTooltip",
+            "overrideLinkImage", "overrideLinkClick" }) do
+        opts[k] = args[k]
+    end
+    return p._card(args.itemName or args[1] or "{{{1}}}", opts)
+end
+
+return p
