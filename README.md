@@ -48,6 +48,10 @@ Choose a **Character** for each draft. Its portrait appears beside the name in *
 
 With a character selected, hovering a shop/build item automatically shows the affected abilities' **before → after** values against the equipped loadout. No ALT key is needed. The info button includes the same comparison for touch users. The **New item imbue preview** target controls hypothetical imbues; equipped imbues keep their own assignments. Upgrades replace their components in the comparison. For an equipped item, the comparison is **without the item → current loadout**. A full inventory is identified as hypothetical.
 
+On **Loadout & stats**, choose **Combined stats** to calculate a combat snapshot for any character. Expand a character ability, select its buffs and upgrade tier, and enable item conditions or enter stack counts. Character, boon, investment, item and selected buff sources feed the same calculation; ability values update too. Standing values remain beside the combined totals for comparison. The selections save per draft and support Undo. Unequipping an item removes its effects from the calculation.
+
+Silver's **Lycan Curse active** preset additionally switches to her transformed weapon and ability set, applies the selected upgrade's resistance/health/movement bonuses, and uses the chosen fire rate stacks. Other characters use their own ability buff controls, including Warden's Last Stand, Yamato's Shadow Transformation and Viscous's Goo Ball. **Other buffs and resistance reductions** accepts separate sources for unlisted buffs or resolved scaled values. Enemy debuffs, damage procs and ability only effects are kept scoped instead of being assumed to change your own stats. Pick conditions that can actually coexist.
+
 **Loadout & stats** shows character totals and expandable ability details above the existing item bonus breakdown. Damage is before enemy resistance. Temporary buffs, triggered procs, combat stacks, and enemy-dependent effects stay separate rather than being assumed active. Silver's transformed form is selectable separately; in-development characters are labeled Preview.
 
 New builds begin with **Early Game**, **Mid Game**, **Late Game**, and **Optional**. The last is marked optional by default. Each category has an **Optional category** checkbox; regular sections are warm tan and optional sections are blue-gray, with optional status also identified in the shop's destination selector. This flag is saved with the draft and supports Undo. Optional items can still be equipped and count normally in loadout stats. Existing drafts keep their categories, with legacy missing flags treated as off.
@@ -68,6 +72,8 @@ The top tabs open separate full-width views: **Build**, **Weapon**, **Vitality**
 ## Calculations
 
 The Weapon, Vitality, and Spirit bars use **only equipped items**, independently of draft categories. Investment is the sum of the full listed cost of currently equipped items of that type. Component upgrades consume equipped components; their value is included once in the upgraded item. The bars use the discrete cumulative investment table under **Item Types → Investment bonuses** at https://deadlock.wiki/Items. They cap their display and bonus at 28,800 souls; the soul value itself can exceed that amount. Removing an item removes its investment.
+
+The **4.8k power spike** has a larger star marker in each investment track and a highlighted entry in the expanded threshold table. Its star fills when that item type reaches 4,800 equipped souls.
 
 These bars are investment bonuses. Character totals additionally include hero base stats, boon scaling and equipped item bonuses; ability values include the selected ability upgrades, scaling and permanent assigned imbues. Enhanced/Street Brawl items and live combat simulation are outside this planner's scope.
 

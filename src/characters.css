@@ -422,3 +422,272 @@
     font-size: 18px;
   }
 }
+
+/* Combat snapshots retain the planner's existing olive and item palettes. */
+.stat-view-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.stat-view-switch button {
+  min-height: 48px;
+}
+.stat-view-switch button[aria-pressed="true"] {
+  background: var(--cream);
+  color: var(--tile-ink);
+}
+.combat-controls {
+  padding: 24px;
+  margin-bottom: 24px;
+  background: #2d3228;
+  border-radius: 4px;
+}
+.combat-controls h3 {
+  font-family: Occult, serif;
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+.combat-controls p,
+.combined-breakdown p {
+  color: #c7ceb9;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 75ch;
+  margin: 12px 0;
+}
+.combat-controls fieldset {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 16px;
+  margin: 24px 0;
+}
+.combat-controls legend {
+  padding: 0 8px;
+  font-weight: 700;
+}
+.combat-controls label:not(.combat-toggle) {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  font-size: 14px;
+}
+.combat-controls input:not([type="checkbox"]),
+.combat-controls select {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+}
+.combat-controls input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  accent-color: var(--cream);
+}
+.combat-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  cursor: pointer;
+}
+.lycan-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 16px;
+}
+.lycan-controls p {
+  grid-column: 1 / -1;
+}
+.combat-effect-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin: 24px 0;
+}
+.combat-effect {
+  min-width: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.combat-effect-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.combat-effect-heading img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.combat-effect-heading label {
+  flex: 1;
+}
+.combat-effect-values {
+  color: var(--cream) !important;
+}
+.additional-buffs {
+  margin: 24px 0;
+}
+.additional-buffs summary,
+.combined-breakdown summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-weight: 700;
+}
+.custom-buff {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 120px auto;
+  align-items: end;
+  gap: 16px;
+}
+.custom-buff button {
+  min-height: 48px;
+}
+.standing-value {
+  display: block;
+  font-size: 12px;
+  line-height: 20px;
+  color: #c7ceb9;
+  font-weight: 400;
+}
+.combined-breakdown {
+  margin-top: 24px;
+  padding: 0 24px;
+  background: #2d3228;
+  border-radius: 4px;
+}
+.combined-source-row {
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.combined-source-row h4 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+.combined-source-row ul {
+  margin: 0;
+  padding-left: 24px;
+  color: #c7ceb9;
+  line-height: 1.6;
+}
+.investment .bar-track {
+  overflow: visible;
+  margin-top: 12px;
+}
+.investment .bar-caption {
+  margin-top: 24px;
+}
+.investment-spike-marker {
+  position: absolute;
+  top: -8px;
+  width: 24px;
+  height: 24px;
+  transform: translateX(-50%);
+  color: var(--type-color);
+}
+.investment-spike-marker svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+  fill: #20231d;
+  stroke: currentColor;
+  stroke-width: 2px;
+}
+.investment-spike-marker b {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  line-height: 16px;
+}
+.spike-unlocked .investment-spike-marker svg {
+  fill: currentColor;
+  stroke: #eee5d2;
+}
+.threshold-grid > .spike-threshold {
+  outline: 2px solid var(--type-color);
+  outline-offset: -2px;
+  font-weight: 700;
+}
+.spike-threshold small {
+  color: var(--cream);
+  font-size: 12px;
+}
+@media (max-width: 800px) {
+  .combat-controls {
+    padding: 16px;
+  }
+  .lycan-controls,
+  .combat-effect-list,
+  .custom-buff {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .combat-controls select {
+    font-size: 16px;
+  }
+  .standing-value {
+    white-space: normal;
+  }
+  .hero-stat strong {
+    min-width: 0;
+    text-align: right;
+  }
+}
+
+.hero-buff-options {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.hero-buff-options > summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 48px;
+}
+.hero-buff-options > summary img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.hero-buff-options > summary small {
+  margin-left: auto;
+  color: #c7ceb9;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.hero-buff-options > label:not(.combat-toggle) {
+  max-width: 320px;
+  margin: 16px 0;
+}
+.hero-buff-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+}
+.hero-buff-option > span {
+  font-size: 14px;
+  color: #c7ceb9;
+  line-height: 1.6;
+}
+.combat-controls > button,
+.additional-buffs > button {
+  min-height: 48px;
+}
+@media (max-width: 800px) {
+  .hero-buff-option {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+  .combat-controls input:not([type="checkbox"]) {
+    font-size: 16px;
+  }
+}

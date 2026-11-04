@@ -4,6 +4,7 @@ import { byId, investment } from "./model.js";
 // Flat spirit is summed first, then percentage spirit multiplies the whole sum.
 export const statRules = {
   "Weapon Damage": ["Weapon", "%", "sum"],
+  "Flat Bullet Damage": ["Weapon", "", "sum"],
   "Fire Rate": ["Weapon", "%", "sum"],
   "Max Ammo": ["Weapon", "%", "sum"],
   "Bullet Velocity": ["Weapon", "%", "sum"],
@@ -19,15 +20,18 @@ export const statRules = {
   "Slow Resist": ["Vitality", "%", "diminish"],
   "Bullet Lifesteal": ["Vitality", "%", "diminish"],
   "Spirit Lifesteal": ["Vitality", "%", "diminish"],
+  "Melee Lifesteal": ["Vitality", "%", "diminish"],
   "Bonus Health": ["Vitality", "", "sum"],
   "Health bonus": ["Vitality", "%", "sum"],
   "Max Health": ["Vitality", "%", "multiply"],
   "Health Regen": ["Vitality", "/s", "sum"],
   "Out of Combat Regen": ["Vitality", "/s", "sum"],
   "Move Speed": ["Vitality", "m/s", "sum"],
+  "Move Speed bonus": ["Vitality", "%", "sum"],
   "Sprint Speed": ["Vitality", "m/s", "sum"],
   Stamina: ["Vitality", "", "sum"],
   "Stamina Recovery": ["Vitality", "%", "diminish"],
+  "Stamina Regeneration": ["Vitality", "%", "sum"],
   "Slide Distance": ["Vitality", "%", "sum"],
   "Air Jump/Dash Distance": ["Vitality", "%", "sum"],
   "Outgoing Healing": ["Vitality", "%", "sum"],
@@ -99,6 +103,21 @@ export function combine(values, mode = "sum") {
     return 100 * (values.reduce((p, v) => p * (1 + v / 100), 1) - 1);
   return values.reduce((s, v) => s + v, 0);
 }
+export function combineStat(label, values) {
+  // Shred combines separately, then subtracts percentage points from resistance.
+  if (["Bullet Resist", "Spirit Resist", "Melee Resist"].includes(label))
+    return (
+      combine(
+        values.filter((v) => v >= 0),
+        "diminish",
+      ) -
+      combine(
+        values.filter((v) => v < 0).map((v) => -v),
+        "diminish",
+      )
+    );
+  return combine(values, statRules[label]?.[2] || "sum");
+}
 export function classifyEffect(item, effect) {
   if (effect.kind === "Passive" && always.has(item.name)) return "Always on";
   if (effect.kind === "Active") return "Active";
@@ -117,7 +136,7 @@ export function classifyEffect(item, effect) {
     return "Passive";
   return "Conditional";
 }
-export function equippedStats(ids) {
+export function equippedStats(ids, additionalSources = []) {
   const equipped = [...new Set(ids)].map((id) => byId[id]).filter(Boolean),
     rows = new Map(),
     effects = [];
@@ -199,10 +218,15 @@ export function equippedStats(ids) {
       }
     }
   }
+  for (const source of additionalSources) {
+    const rule = statRules[source.label];
+    if (!rule || !Number.isFinite(source.value)) continue;
+    add({ group: rule[0], unit: rule[1], mode: rule[2], ...source }, source);
+  }
   for (const row of rows.values())
-    row.total = combine(
+    row.total = combineStat(
+      row.label,
       row.sources.map((s) => s.value),
-      row.mode,
     );
   const spirit = rows.get("Spirit Power"),
     multiplier = rows.get("Spirit power multiplier");

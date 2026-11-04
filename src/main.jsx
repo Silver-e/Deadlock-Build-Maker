@@ -944,7 +944,7 @@ function App() {
                 const s = investment(draft.equipped, type);
                 return (
                   <details
-                    className={`investment ${type.toLowerCase()}`}
+                    className={`investment ${type.toLowerCase()} ${s.souls >= 4800 ? "spike-unlocked" : "spike-locked"}`}
                     key={type}
                   >
                     <summary>
@@ -975,12 +975,27 @@ function App() {
                             transform: `scaleX(${Math.min(s.souls / 28800, 1)})`,
                           }}
                         />
-                        {thresholds.slice(0, -1).map((t) => (
-                          <i
-                            key={t}
-                            style={{ left: `${(t / 28800) * 100}%` }}
-                          />
-                        ))}
+                        {thresholds.slice(0, -1).map((t) =>
+                          t === 4800 ? (
+                            <span
+                              key={t}
+                              className="investment-spike-marker"
+                              style={{ left: `${(t / 28800) * 100}%` }}
+                              role="img"
+                              aria-label={`4,800 soul spike ${s.souls >= t ? "unlocked" : "locked"}`}
+                            >
+                              <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="m12 2 3 6.2 6.8 1-4.9 4.8 1.2 6.8-6.1-3.2-6.1 3.2 1.2-6.8L2.2 9.2l6.8-1Z" />
+                              </svg>
+                              <b>4.8k</b>
+                            </span>
+                          ) : (
+                            <i
+                              key={t}
+                              style={{ left: `${(t / 28800) * 100}%` }}
+                            />
+                          ),
+                        )}
                       </span>
                       <span className="bar-caption">
                         {s.next
@@ -995,9 +1010,10 @@ function App() {
                         {thresholds.map((t, i) => (
                           <span
                             key={t}
-                            className={s.souls >= t ? "reached" : ""}
+                            className={`${s.souls >= t ? "reached" : ""} ${t === 4800 ? "spike-threshold" : ""}`}
                           >
                             {money(t)}
+                            {t === 4800 && <small>Power spike</small>}
                             <b>
                               +{bonuses[type][i]}
                               {type === "Spirit" ? "" : "%"}
@@ -1016,7 +1032,20 @@ function App() {
             </div>
           </div>
         </section>
-        {view === "loadout" && <CharacterStats draft={draft} />}
+        {view === "loadout" && (
+          <CharacterStats
+            draft={draft}
+            onCombatChange={(fields) =>
+              update((d) => ({ ...d, combat: { ...d.combat, ...fields } }))
+            }
+            onRankChange={(rank, slot = "4") =>
+              update((d) => ({
+                ...d,
+                abilityRanks: { ...d.abilityRanks, [slot]: rank },
+              }))
+            }
+          />
+        )}
         {view === "loadout" && (
           <EquippedStats
             ids={draft.equipped}

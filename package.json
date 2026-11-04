@@ -7,10 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test tests/model.test.mjs tests/stats.test.mjs tests/heroes.test.mjs",
+    "test": "node --test tests/model.test.mjs tests/stats.test.mjs tests/heroes.test.mjs tests/combat.test.mjs",
     "test:ui": "node tests/ui.mjs",
     "test:pages": "node tests/pages.mjs",
     "test:moves": "node tests/item-moves.mjs",
+    "test:combat": "node tests/combat-ui.mjs",
     "sync:items": "node scripts/sync-items.mjs",
     "sync:heroes": "node scripts/sync-heroes.mjs"
   },

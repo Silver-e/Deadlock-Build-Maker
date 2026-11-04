@@ -1,5 +1,49 @@
 # Equipped stat calculations
 
+## Combined combat snapshots
+
+`src/combat.js` builds explicit extra sources on top of the same equipment and
+character calculation used for standing stats. This works for the whole roster.
+Hero buff controls map known self attributes from bundled ability properties and
+upgrade data, including attributes that appear only in upgrades. Damage procs,
+enemy slows/shred and summoned-unit attributes are not inferred to be self buffs.
+Each condition is opt-in. Unknown or scoped effects stay in the ability/item
+breakdown; the additional-source editor accepts resolved values for other buffs.
+Separate phases of an ability can be selected individually.
+
+Independent positive damage resistances use `100 * (1 - product(1 - r/100))`.
+Incoming resistance reductions use that same formula in a separate pool, then
+subtract percentage points from the positive resistance result. For example,
+40% and 20% resistance combine to 52%; 25% and 20% shred combine to 40%; final
+resistance is 12%, not a multiplication of resistance and negative values.
+See [Damage Resistance](https://deadlock.wiki/Resistance).
+
+Stacks within one buff first form one source, bounded by its bundled stack cap.
+Different resistance/cooldown/duration/range sources diminish; weapon damage and
+fire rate bonuses add. Flat bullet damage increases the weapon's damage pool
+before its weapon damage multiplier. Percentage movement bonuses are distinct
+from diminishing flat movement additions. Ability stamina regeneration rate
+increases divide recovery time by `1 + rate/100`; they are not treated as a
+percentage reduction that could make recovery negative.
+
+Item spirit multipliers and selected hero spirit gains resolve before other
+spirit-scaled hero buffs. Flat spirit includes base/boons and equipment exactly
+once. Hero self buffs use their upgraded properties, spirit and boon scaling.
+Ambiguous scaled item values require a resolved additional source instead of
+guessing their scaling type. Selected effects from an unequipped item or another
+hero do not apply. Snapshots save per draft and participate in Undo.
+
+Silver is a transformation preset on top of this shared pipeline. Lycan Curse
+uses her transformed base weapon/abilities, applies tier 1's +15% bullet/spirit
+resistance only while active, and uses tier/boon-scaled health and movement. Its
+fire rate is the full spirit-scaled bonus multiplied by the selected stacks / 15;
+zero stacks is the default. See [Silver](https://deadlock.wiki/Silver).
+
+Run `npm run test:combat` for desktop/mobile control, source, persistence and
+investment-spike checks; `npm test` includes cross-character numerical cases.
+
+## Standing equipment totals
+
 Only the separately equipped items are counted. Every source has its item ID attached for the UI's source icons and detail buttons. The same item cannot count twice. Existing drafts require no migration.
 
 Permanent item stats and always-on tooltip passives are aggregated, together with the three investment bonuses. Always-on tooltip passives (for example Greater Expansion, Superior Cooldown, Debuff Reducer, and Heroic Aura's passive) are explicitly identified; merely being called “Passive” does not make a triggered effect unconditional.

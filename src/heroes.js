@@ -1,6 +1,6 @@
 import snapshot from "../data/heroes.json" with { type: "json" };
 import { byId, ancestors } from "./model.js";
-import { equippedStats, combine, parseStat } from "./stats.js";
+import { equippedStats, combine, combineStat, parseStat } from "./stats.js";
 
 export const heroes = snapshot.heroes;
 export const heroById = Object.fromEntries(heroes.map((h) => [h.id, h]));
@@ -35,18 +35,22 @@ export function imbueTarget(draft, item) {
   );
 }
 
-function bonusContext(ids) {
-  const stats = equippedStats(ids);
+function bonusContext(ids, additionalSources = []) {
+  const stats = equippedStats(ids, additionalSources);
   const rows = Object.fromEntries(stats.rows.map((r) => [r.label, r]));
   const get = (name) => rows[name]?.total || 0;
   const values = (name) => (rows[name]?.sources || []).map((s) => s.value);
   return { rows, get, values };
 }
 
-export function characterStats(draft, ids = draft.equipped) {
+export function characterStats(
+  draft,
+  ids = draft.equipped,
+  additionalSources = [],
+) {
   const hero = heroById[draft.heroId];
   if (!hero) return null;
-  const bonus = bonusContext(ids),
+  const bonus = bonusContext(ids, additionalSources),
     { get } = bonus,
     boons = boonLevel(draft);
   const spiritMultiplier = 1 + get("Spirit power multiplier") / 100;
@@ -64,7 +68,8 @@ export function characterStats(draft, ids = draft.equipped) {
   const weaponBonus = get("Weapon Damage");
   const weaponMultiplier =
     1 + (weaponBonus / 100) * (hero.base.WeaponPowerScale ?? 1);
-  const bullet = raw("BulletDamage") * weaponMultiplier;
+  const bullet =
+    (raw("BulletDamage") + get("Flat Bullet Damage")) * weaponMultiplier;
   const pellets = hero.weapon?.BulletsPerShot || 1;
   const fireRate = raw("RoundsPerSecond") * (1 + get("Fire Rate") / 100);
   const lightMelee =
@@ -78,15 +83,16 @@ export function characterStats(draft, ids = draft.equipped) {
       (1 + get("Max Health") / 100),
   );
   const moveSpeed =
-    raw("MaxMoveSpeed") + movementBonus(bonus.values("Move Speed"));
-  const bulletResist = combine(
-    [raw("BulletResist"), get("Bullet Resist")],
-    "diminish",
-  );
-  const spiritResist = combine(
-    [raw("TechResist"), get("Spirit Resist")],
-    "diminish",
-  );
+    raw("MaxMoveSpeed") * (1 + get("Move Speed bonus") / 100) +
+    movementBonus(bonus.values("Move Speed"));
+  const bulletResist = combineStat("Bullet Resist", [
+    raw("BulletResist"),
+    ...bonus.values("Bullet Resist"),
+  ]);
+  const spiritResist = combineStat("Spirit Resist", [
+    raw("TechResist"),
+    ...bonus.values("Spirit Resist"),
+  ]);
   const stats = [
     [
       "Weapon",
@@ -147,7 +153,8 @@ export function characterStats(draft, ids = draft.equipped) {
     [
       "Vitality",
       "Stamina Recovery",
-      raw("StaminaCooldown") * (1 - get("Stamina Recovery") / 100),
+      (raw("StaminaCooldown") * (1 - get("Stamina Recovery") / 100)) /
+        Math.max(0.0001, 1 + get("Stamina Regeneration") / 100),
       "s",
     ],
   ].map(([group, label, total, unit, note]) => ({
@@ -277,8 +284,12 @@ function abilityModifiers(draft, ability, ids, context) {
   return modifiers;
 }
 
-export function abilityStats(draft, ids = draft.equipped) {
-  const context = characterStats(draft, ids);
+export function abilityStats(
+  draft,
+  ids = draft.equipped,
+  additionalSources = [],
+) {
+  const context = characterStats(draft, ids, additionalSources);
   if (!context) return [];
   return context.hero.abilities.map((ability) => {
     const rank = abilityRank(draft, ability.slot);

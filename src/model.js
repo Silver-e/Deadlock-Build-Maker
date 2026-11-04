@@ -122,6 +122,35 @@ export function validDraft(d) {
     typeof d.id === "string" &&
     typeof d.name === "string" &&
     typeof d.description === "string" &&
+    (d.combat === undefined ||
+      (d.combat &&
+        typeof d.combat === "object" &&
+        !Array.isArray(d.combat) &&
+        (d.combat.enabled === undefined ||
+          typeof d.combat.enabled === "boolean") &&
+        (d.combat.lycan === undefined || typeof d.combat.lycan === "boolean") &&
+        (d.combat.lycanStacks === undefined ||
+          (Number.isInteger(d.combat.lycanStacks) &&
+            d.combat.lycanStacks >= 0 &&
+            d.combat.lycanStacks <= 15)) &&
+        (d.combat.effects === undefined ||
+          (d.combat.effects &&
+            typeof d.combat.effects === "object" &&
+            !Array.isArray(d.combat.effects) &&
+            Object.values(d.combat.effects).every(
+              (v) => Number.isInteger(v) && v >= 0 && v <= 1000,
+            ))) &&
+        (d.combat.extra === undefined ||
+          (Array.isArray(d.combat.extra) &&
+            d.combat.extra.every(
+              (source) =>
+                source &&
+                typeof source.id === "string" &&
+                typeof source.name === "string" &&
+                typeof source.label === "string" &&
+                Number.isFinite(source.value) &&
+                Math.abs(source.value) <= 100000,
+            ))))) &&
     (d.heroId == null || typeof d.heroId === "string") &&
     (d.boons === undefined ||
       (Number.isInteger(d.boons) && d.boons >= 0 && d.boons <= 35)) &&
