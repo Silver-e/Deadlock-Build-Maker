@@ -54,13 +54,13 @@ New builds begin with **Early Game**, **Mid Game**, **Late Game**, and **Optiona
 
 The top tabs open separate full-width views: **Build**, **Weapon**, **Vitality**, **Spirit**, and **Loadout & stats**. On the build page, select a category and choose **Add items**. In the shop, the destination selector changes which category receives items; **Return to build** brings you back to the full editor. The investment bars and equipment occupy the loadout page rather than crowding the build.
 
-- Click a category to choose where shop items go. Click a shop item to add or remove it from that category.
+- Click a category to choose where shop items go. Click a shop item to add or remove it from that category. If it already belongs to another category, the shop labels the action **Move from … to …** and moves the existing item.
 - Click an item in the draft to equip or unequip it. Shift click a shop item to equip it directly.
 - The info button opens the full item description, stats, components, and upgrades. The detail panel also has add and equip buttons.
 - Hover a shop or draft item to preview its stats, descriptions, effects and cooldowns before clicking. Keyboard focus shows the same preview. Move onto a long tooltip to scroll it; press Escape to dismiss it. Touch users can use the info button.
 - Imbue-capable items have a purple IMBUE ribbon inside their artwork. Hover previews and equipped stats use bundled native game attribute/effect icons; conditional bonuses retain the source item icon as well.
-- Drag items to reorder them or move them between categories. Use the category arrows to reorder categories, the expand control for full or half width, and the trash control to remove a category. Undo reverses changes to the current build.
-- Rename categories and add notes directly in their fields. Drafts may contain alternatives, duplicates across categories, and more than 12 items.
+- Drag the **Move** handle below a draft item to reorder it or move it between categories, on touchscreens as well as desktop. Hold near the screen edge to scroll to another category. The card body still scrolls the page and taps still equip items. Tap **Move** for a **Move to category** selector as an alternative to dragging. Use the category arrows to reorder categories, the expand control for full or half width, and the trash control to remove a category. Undo reverses changes to the current build.
+- Rename categories and add notes directly in their fields. Drafts may contain alternatives and more than 12 items, but each item belongs to only one category. Older saved duplicates are kept in their first category; equipment and stats are unchanged.
 - Click equipped items to remove them. Right click an equipped item to inspect it. Extra slots can be set from zero to three; all are unlocked by default for planning a full build.
 - **My drafts** switches between drafts saved in this browser. Changes save automatically. Clearing site data or using a different browser/profile will not retain these drafts.
 - Click an investment bar to expand its threshold table.

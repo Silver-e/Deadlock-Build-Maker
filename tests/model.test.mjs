@@ -11,7 +11,73 @@ import {
   ancestors,
   makeDraft,
   validDraft,
+  moveDraftItem,
+  uniqueDraftItems,
 } from "../src/model.js";
+test("moving draft items enforces one category without changing equipment", () => {
+  const d = makeDraft();
+  const [a, b, c] = items.slice(0, 3).map((item) => item.id);
+  d.categories[0].items = [a, b];
+  d.categories[1].items = [c];
+  d.equipped = [a];
+  const before = structuredClone(d);
+  const moved = moveDraftItem(d, a, d.categories[1].id, 0);
+  assert.deepEqual(
+    moved.categories.map((c) => c.items),
+    [[b], [a, c], [], []],
+  );
+  assert.deepEqual(moved.equipped, [a]);
+  assert.deepEqual(d, before);
+  const repeat = moveDraftItem(moved, a, d.categories[1].id);
+  assert.deepEqual(repeat.categories[1].items, [c, a]);
+  assert.equal(
+    repeat.categories.flatMap((c) => c.items).filter((id) => id === a).length,
+    1,
+  );
+  assert.equal(moveDraftItem(d, "unknown", d.categories[0].id), d);
+  assert.equal(moveDraftItem(d, a, "unknown"), d);
+});
+test("reordering uses the original drop index and dropping on itself does nothing", () => {
+  const d = makeDraft();
+  const ids = items.slice(0, 4).map((item) => item.id);
+  d.categories[0].items = ids;
+  const target = d.categories[0].id;
+  assert.deepEqual(moveDraftItem(d, ids[0], target, 2).categories[0].items, [
+    ids[1],
+    ids[0],
+    ids[2],
+    ids[3],
+  ]);
+  assert.deepEqual(moveDraftItem(d, ids[3], target, 1).categories[0].items, [
+    ids[0],
+    ids[3],
+    ids[1],
+    ids[2],
+  ]);
+  assert.deepEqual(moveDraftItem(d, ids[1], target, 1), d);
+});
+test("legacy duplicate cleanup keeps the first occurrence and all draft settings", () => {
+  const d = makeDraft();
+  const [a, b] = items.slice(0, 2).map((item) => item.id);
+  d.categories[0].items = [a, a];
+  d.categories[1].items = [a, b];
+  d.categories[3].items = [b];
+  d.equipped = [a, b];
+  const before = structuredClone(d);
+  const clean = uniqueDraftItems(d);
+  assert.deepEqual(
+    clean.categories.map((c) => c.items),
+    [[a], [b], [], []],
+  );
+  assert.deepEqual(clean.equipped, d.equipped);
+  assert.deepEqual(
+    clean.categories.map((c) => c.optional),
+    [false, false, false, true],
+  );
+  assert.deepEqual(d, before);
+  assert.deepEqual(uniqueDraftItems(clean), clean);
+  assert.ok(validDraft(clean));
+});
 test("new drafts use four game-phase categories with only Optional flagged", () => {
   const d = makeDraft();
   assert.deepEqual(

@@ -11,6 +11,8 @@ import {
   equip,
   makeDraft,
   validDraft,
+  moveDraftItem,
+  uniqueDraftItems,
   snapshot,
 } from "./model";
 import "./style.css";
@@ -22,6 +24,7 @@ import CharacterPanel from "./CharacterPanel";
 import CharacterStats from "./CharacterStats";
 import AbilityPreview from "./AbilityPreview";
 import { heroById, imbueTarget } from "./heroes";
+import useItemDrag from "./useItemDrag";
 const KEY = "deadlock-local-drafts-v1";
 const money = (n) => n.toLocaleString("en-US");
 function Icon({ name, size = 18 }) {
@@ -51,6 +54,7 @@ function Icon({ name, size = 18 }) {
     save: "M4 3h14l3 3v15H3V3h1ZM7 3v6h10V3M7 21v-8h10v8",
     lock: "M6 10h12v11H6V10ZM8 10V6a4 4 0 0 1 8 0v4",
     expand: "M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5",
+    move: "M8 4h.01M16 4h.01M8 12h.01M16 12h.01M8 20h.01M16 20h.01",
   };
   return (
     <svg
@@ -71,8 +75,19 @@ function Icon({ name, size = 18 }) {
 function initial() {
   try {
     const s = JSON.parse(localStorage.getItem(KEY));
-    if (s?.drafts?.length && s.drafts.every(validDraft))
-      return { ...s, error: "" };
+    if (s?.drafts?.length && s.drafts.every(validDraft)) {
+      const drafts = s.drafts.map(uniqueDraftItems);
+      const migrated = JSON.stringify(drafts) !== JSON.stringify(s.drafts);
+      return {
+        ...s,
+        drafts,
+        migrated,
+        error: "",
+        notice: migrated
+          ? "Duplicate items in saved drafts were kept in their first category."
+          : "",
+      };
+    }
     if (s) throw Error();
   } catch {
     return {
@@ -94,17 +109,25 @@ function App() {
     [activeOnly, setActiveOnly] = useState(false),
     [selected, setSelected] = useState(boot.drafts[0].categories[0].id),
     [detail, setDetail] = useState(null),
-    [message, setMessage] = useState(boot.error),
+    [message, setMessage] = useState(boot.error || boot.notice),
     [saved, setSaved] = useState(!boot.error),
     [library, setLibrary] = useState(false),
     [deleteId, setDeleteId] = useState(null),
     [history, setHistory] = useState([]);
-  const dirty = useRef(false),
+  const dirty = useRef(!!boot.migrated),
     closeRef = useRef(null),
     detailTrigger = useRef(null);
   const draft = drafts.find((d) => d.id === current) || drafts[0];
   const category =
     draft.categories.find((c) => c.id === selected) || draft.categories[0];
+  const itemDrag = useItemDrag((id, target, before) => {
+    const destination = draft.categories.find((c) => c.id === target);
+    moveItem(
+      id,
+      target,
+      before ? destination.items.indexOf(before) : undefined,
+    );
+  });
   function update(fn) {
     dirty.current = true;
     setSaved(false);
@@ -178,6 +201,10 @@ function App() {
     setDetail(item.id);
   }
   function add(id) {
+    if (!category.items.includes(id)) {
+      moveItem(id, category.id);
+      return;
+    }
     update((d) => ({
       ...d,
       categories: d.categories.map((c) =>
@@ -242,23 +269,28 @@ function App() {
   function drop(e, target, index) {
     e.preventDefault();
     try {
-      const { id, from } = JSON.parse(e.dataTransfer.getData("text/plain"));
-      if (!byId[id]) return;
-      update((d) => ({
-        ...d,
-        categories: d.categories.map((c) => {
-          let arr = c.items;
-          if (c.id === from) arr = arr.filter((x) => x !== id);
-          if (c.id === target) {
-            arr = arr.filter((x) => x !== id);
-            arr = [...arr];
-            arr.splice(index ?? arr.length, 0, id);
-          }
-          return { ...c, items: arr };
-        }),
-      }));
-      setSelected(target);
+      const { id } = JSON.parse(e.dataTransfer.getData("text/plain"));
+      moveItem(id, target, index);
     } catch {}
+  }
+  function moveItem(id, target, index) {
+    const next = moveDraftItem(draft, id, target, index);
+    if (JSON.stringify(next.categories) === JSON.stringify(draft.categories))
+      return;
+    update((d) => moveDraftItem(d, id, target, index));
+    setSelected(target);
+    const action = draft.categories.some((c) => c.items.includes(id))
+      ? "moved"
+      : "added";
+    setMessage(
+      `${byId[id].name} ${action} to ${next.categories.find((c) => c.id === target).name || "category"}.`,
+    );
+  }
+  function addLabel(id) {
+    const existing = draft.categories.find((c) => c.items.includes(id));
+    if (existing?.id === category.id) return `Remove from ${category.name}`;
+    if (existing) return `Move from ${existing.name} to ${category.name}`;
+    return `Add to ${category.name || "category"}`;
   }
   function card(item, { inBuild = false, from = null } = {}) {
     const equipped = draft.equipped.includes(item.id),
@@ -273,16 +305,21 @@ function App() {
             : "Click to add to category. Shift click to equip."
         }
         tooltipId={`hover-${item.id}-${from || "shop"}`}
-        disabled={!!detail || library || !!deleteId}
-        className={`item tier-${item.tier} ${item.type.toLowerCase()} ${item.active ? "active-item" : ""} ${item.imbue ? "imbue-item" : ""} ${equipped ? "equipped" : ""}`}
+        disabled={!!detail || library || !!deleteId || !!itemDrag.drag}
+        data-draft-item={inBuild ? item.id : undefined}
+        className={`item tier-${item.tier} ${item.type.toLowerCase()} ${item.active ? "active-item" : ""} ${item.imbue ? "imbue-item" : ""} ${equipped ? "equipped" : ""} ${inBuild && itemDrag.drag?.id === item.id ? "drag-source" : ""} ${inBuild && itemDrag.drag?.target === from && itemDrag.drag?.before === item.id ? "drop-before" : ""}`}
         key={item.id}
         draggable
-        onDragStart={(e) =>
+        onDragStart={(e) => {
+          if (itemDrag.isPending()) {
+            e.preventDefault();
+            return;
+          }
           e.dataTransfer.setData(
             "text/plain",
             JSON.stringify({ id: item.id, from }),
-          )
-        }
+          );
+        }}
         onDragOver={inBuild ? (e) => e.preventDefault() : undefined}
         onDrop={
           inBuild
@@ -305,7 +342,7 @@ function App() {
           onClick={(e) =>
             inBuild || e.shiftKey ? toggleEquip(item.id) : add(item.id)
           }
-          aria-label={`${inBuild ? "Equip or unequip" : added ? "Remove from " + category.name : "Add to " + category.name}: ${item.name}`}
+          aria-label={`${inBuild ? "Equip or unequip" : addLabel(item.id)}: ${item.name}`}
         >
           <div className="item-art">
             <img src={assetUrl(item.icon)} alt="" />
@@ -320,6 +357,20 @@ function App() {
           <span className="item-name">{item.name}</span>
           {item.active && <span className="active-label">ACTIVE</span>}
         </button>
+        {inBuild && (
+          <button
+            className="item-move"
+            aria-label={`Move ${item.name}`}
+            title="Drag to move. Tap for category options."
+            onPointerDown={(event) => itemDrag.start(event, item.id)}
+            onClick={(event) => {
+              event.stopPropagation();
+              if (!itemDrag.suppressClick()) inspect(item, event);
+            }}
+          >
+            <Icon name="move" size={16} /> Move
+          </button>
+        )}
         <button
           className="inspect"
           aria-label={`Inspect ${item.name}`}
@@ -548,7 +599,8 @@ function App() {
               {draft.categories.map((c, ci) => (
                 <section
                   key={c.id}
-                  className={`category ${category.id === c.id ? "selected" : ""} ${c.wide ? "wide" : ""} ${c.optional ? "optional-category" : ""}`}
+                  className={`category ${category.id === c.id ? "selected" : ""} ${c.wide ? "wide" : ""} ${c.optional ? "optional-category" : ""} ${itemDrag.drag?.target === c.id ? "drop-target" : ""}`}
+                  data-category-id={c.id}
                   onClick={() => setSelected(c.id)}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => drop(e, c.id)}
@@ -660,7 +712,8 @@ function App() {
               <p>
                 Shop click: add to category. Draft click: equip.
                 <br />
-                Drag to reorder. Use the info button for item details.
+                Drag the Move handle to reorder or change categories. Tap Move
+                for category options.
               </p>
             </div>
           </section>
@@ -1089,11 +1142,7 @@ function App() {
             </a>
           </div>
           <div className="detail-actions">
-            <button onClick={() => add(item.id)}>
-              {category.items.includes(item.id)
-                ? "Remove from category"
-                : `Add to ${category.name || "category"}`}
-            </button>
+            <button onClick={() => add(item.id)}>{addLabel(item.id)}</button>
             <button
               className="cream-button"
               onClick={() => toggleEquip(item.id)}
@@ -1101,7 +1150,37 @@ function App() {
               {draft.equipped.includes(item.id) ? "Unequip item" : "Equip item"}
             </button>
           </div>
+          {draft.categories.some((c) => c.items.includes(item.id)) && (
+            <label className="item-move-destination">
+              Move to category
+              <select
+                aria-label={`Category for ${item.name}`}
+                value={
+                  draft.categories.find((c) => c.items.includes(item.id)).id
+                }
+                onChange={(event) => moveItem(item.id, event.target.value)}
+              >
+                {draft.categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name || "Unnamed category"}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </aside>
+      )}
+      {itemDrag.drag && (
+        <div
+          className="item-drag-preview"
+          aria-hidden="true"
+          style={{
+            transform: `translate(${Math.min(Math.max(8, itemDrag.drag.x - 80), window.innerWidth - 168)}px, ${Math.max(8, itemDrag.drag.y - 64)}px)`,
+          }}
+        >
+          <img src={assetUrl(byId[itemDrag.drag.id].icon)} alt="" />
+          {byId[itemDrag.drag.id].name}
+        </div>
       )}
       {deleteId && (
         <div className="dialog-backdrop">

@@ -84,6 +84,38 @@ export function makeDraft() {
     extra: 3,
   };
 }
+// Migrate older saves without changing category order or the equipped loadout.
+export function uniqueDraftItems(draft) {
+  const seen = new Set();
+  return {
+    ...draft,
+    categories: draft.categories.map((category) => ({
+      ...category,
+      items: category.items.filter((id) => {
+        if (seen.has(id)) return false;
+        seen.add(id);
+        return true;
+      }),
+    })),
+  };
+}
+
+// Index refers to the destination before removal, as reported by a drop target.
+export function moveDraftItem(draft, id, target, index) {
+  const destination = draft.categories.find((c) => c.id === target);
+  if (!byId[id] || !destination) return draft;
+  const before = destination.items.slice(0, index ?? destination.items.length);
+  const position = before.filter((value) => value !== id).length;
+  return {
+    ...draft,
+    categories: draft.categories.map((category) => {
+      const items = category.items.filter((value) => value !== id);
+      if (category.id === target) items.splice(position, 0, id);
+      return { ...category, items };
+    }),
+  };
+}
+
 export function validDraft(d) {
   return (
     d &&
