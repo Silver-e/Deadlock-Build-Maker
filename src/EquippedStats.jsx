@@ -1,3 +1,4 @@
+import { assetUrl } from "./assets.js";
 import React from "react";
 import { types } from "./model";
 import { equippedStats, statNumber } from "./stats";
@@ -17,7 +18,7 @@ export default function EquippedStats({
       aria-label={`Inspect ${s.name}: ${s.raw || s.label}${s.condition ? ". " + s.condition : ""}`}
       title={`${s.name}: ${s.raw || ""}${s.condition ? " — " + s.condition : ""}`}
     >
-      <img src={equipped.find((i) => i.id === s.id)?.icon} alt="" />
+      <img src={assetUrl(equipped.find((i) => i.id === s.id)?.icon)} alt="" />
       <span>{s.raw || statNumber(s.value, s.unit)}</span>
       {s.classification && <small>{s.classification}</small>}
     </button>
@@ -125,7 +126,7 @@ export default function EquippedStats({
                 >
                   <div className="effect-item-title">
                     <button onClick={(e) => onInspect(item.id, e)}>
-                      <img src={item.icon} alt="" />
+                      <img src={assetUrl(item.icon)} alt="" />
                       {item.name}
                     </button>
                   </div>

@@ -1,4 +1,5 @@
-﻿import React, { useState, useEffect, useRef } from "react";
+import { assetUrl } from "./assets.js";
+import React, { useState, useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import {
   items,
@@ -28,7 +29,7 @@ function Icon({ name, size = 18 }) {
     return (
       <img
         className="category-icon"
-        src={`/icons/${name}.png`}
+        src={assetUrl(`/icons/${name}.png`)}
         width={size}
         height={size}
         alt=""
@@ -307,7 +308,7 @@ function App() {
           aria-label={`${inBuild ? "Equip or unequip" : added ? "Remove from " + category.name : "Add to " + category.name}: ${item.name}`}
         >
           <div className="item-art">
-            <img src={item.icon} alt="" />
+            <img src={assetUrl(item.icon)} alt="" />
             {item.imbue && <span className="imbue-label">IMBUE</span>}
             <span className="tier-marks">{"I".repeat(item.tier)}</span>
             {equipped && (
@@ -409,7 +410,7 @@ function App() {
                 {heroById[d.heroId] && (
                   <img
                     className="draft-portrait"
-                    src={heroById[d.heroId].portrait}
+                    src={assetUrl(heroById[d.heroId].portrait)}
                     alt={heroById[d.heroId].name}
                   />
                 )}
@@ -746,7 +747,7 @@ function App() {
                     >
                       <div className="tier-heading">
                         <span className="souls">
-                          <img src="/souls.png" alt="" />
+                          <img src={assetUrl("/souls.png")} alt="" />
                           {money([800, 1600, 3200, 6400][t - 1])}
                         </span>
                         <span className="tier-rule" />
@@ -831,7 +832,7 @@ function App() {
                 Clear loadout
               </button>
               <span className="total-souls">
-                <img src="/souls.png" alt="Souls" />
+                <img src={assetUrl("/souls.png")} alt="Souls" />
                 {money(total)}
               </span>
             </div>
@@ -870,7 +871,7 @@ function App() {
                   >
                     {i ? (
                       <>
-                        <img src={i.icon} alt={i.name} />
+                        <img src={assetUrl(i.icon)} alt={i.name} />
                         <span className="slot-remove">
                           <Icon name="close" size={14} />
                         </span>
@@ -1012,7 +1013,7 @@ function App() {
           aria-label={`${item.name} details`}
         >
           <div className="detail-heading">
-            <img src={item.icon} alt="" />
+            <img src={assetUrl(item.icon)} alt="" />
             <div>
               <h2>{item.name}</h2>
               <span className="souls">
@@ -1057,7 +1058,7 @@ function App() {
                   .filter((id) => byId[id])
                   .map((id) => (
                     <button key={id} onClick={() => setDetail(id)}>
-                      <img src={byId[id].icon} alt="" />
+                      <img src={assetUrl(byId[id].icon)} alt="" />
                       {byId[id].name}
                       <small>{money(byId[id].cost)}</small>
                     </button>
@@ -1071,7 +1072,7 @@ function App() {
                   .filter((i) => i.components.includes(item.id))
                   .map((i) => (
                     <button key={i.id} onClick={() => setDetail(i.id)}>
-                      <img src={i.icon} alt="" />
+                      <img src={assetUrl(i.icon)} alt="" />
                       {i.name}
                       <small>{money(i.cost)}</small>
                     </button>

@@ -15,6 +15,33 @@ Open **http://127.0.0.1:5173**. Keep the terminal open while using the app. Node
 
 For a production build, run `npm run build`, then `npm run preview` and open http://127.0.0.1:4173. Drafts belong to the browser and address used: development and preview use separate browser storage.
 
+## GitHub Pages
+
+The planner can also run as a static website without a local server. The
+`.github/workflows/deploy.yml` workflow tests, builds, and deploys every push to
+`main`. In the GitHub repository's **Settings → Pages**, select **GitHub Actions**
+as the source. GitHub Pages must be available for the repository's visibility
+and account plan.
+
+The workflow gets the hosting path from GitHub Pages, so bundled images, fonts,
+and tooltips work under the repository URL as well as a custom domain. Local
+development continues to use `/`. To build for a particular subdirectory manually:
+
+```powershell
+$env:PAGES_BASE_PATH = "/Deadlock-Build-Maker/"
+npm run build
+npm run preview
+```
+
+Open the same subdirectory on the preview server. Remove the override with
+`Remove-Item Env:\PAGES_BASE_PATH` when finished. Run `npm run test:pages` to build
+and smoke-test deployment under a subdirectory (requires Playwright Chromium).
+
+Drafts stay in each browser's local storage. Drafts created on localhost do not
+automatically transfer to the hosted site, and there is no cross-device sync.
+Item and hero data remain bundled snapshots; refreshing them and pushing to
+`main` deploys an updated snapshot.
+
 ## Use
 
 Choose a **Character** for each draft. Its portrait appears beside the name in **My drafts**. Existing drafts remain usable without a character. Set **Boons** and open **Ability upgrades & imbues** to choose cumulative ability tiers and the targets of equipped imbue items. These settings save with the draft and support Undo.

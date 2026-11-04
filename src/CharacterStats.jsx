@@ -1,3 +1,4 @@
+import { assetUrl } from "./assets.js";
 import React from "react";
 import { characterStats, abilityStats } from "./heroes";
 import { types } from "./model";
@@ -18,7 +19,7 @@ export default function CharacterStats({ draft }) {
             Assigned imbues apply to the abilities below.
           </p>
         </div>
-        <img src={totals.hero.portrait} alt="" />
+        <img src={assetUrl(totals.hero.portrait)} alt="" />
       </div>
       <div className="stat-columns">
         {types.map((type) => (
@@ -52,7 +53,7 @@ export default function CharacterStats({ draft }) {
         {abilities.map((a) => (
           <details className="character-ability" key={a.id}>
             <summary>
-              <img src={a.icon} alt="" />
+              <img src={assetUrl(a.icon)} alt="" />
               <span>
                 {a.name}
                 <small>

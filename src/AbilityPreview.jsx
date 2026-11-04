@@ -1,3 +1,4 @@
+import { assetUrl } from "./assets.js";
 import React from "react";
 import { byId } from "./model";
 import { heroById, itemComparison, boonLevel } from "./heroes";
@@ -21,7 +22,7 @@ export default function AbilityPreview({ draft, item }) {
       aria-label={`${hero.name} ability changes`}
     >
       <div className="ability-preview-title">
-        <img src={hero.portrait} alt="" />
+        <img src={assetUrl(hero.portrait)} alt="" />
         <div>
           <h4>{hero.name} · Ability changes</h4>
           <small>{boonLevel(draft)} boons · selected ability upgrades</small>
@@ -57,7 +58,7 @@ export default function AbilityPreview({ draft, item }) {
             comparison.abilities.map((ability) => (
               <div className="ability-change" key={ability.id}>
                 <h5>
-                  <img src={ability.icon} alt="" />
+                  <img src={assetUrl(ability.icon)} alt="" />
                   {ability.name}
                   <small>{ability.rank ? `T${ability.rank}` : "Base"}</small>
                 </h5>

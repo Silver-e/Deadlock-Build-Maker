@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test": "node --test tests/model.test.mjs tests/stats.test.mjs tests/heroes.test.mjs",
     "test:ui": "node tests/ui.mjs",
+    "test:pages": "node tests/pages.mjs",
     "sync:items": "node scripts/sync-items.mjs",
     "sync:heroes": "node scripts/sync-heroes.mjs"
   },

@@ -1,3 +1,4 @@
+import { assetUrl } from "./assets.js";
 import React from "react";
 import {
   heroes,
@@ -21,7 +22,11 @@ export default function CharacterPanel({ draft, onChange }) {
     >
       <div className="character-toolbar">
         {hero && (
-          <img className="character-portrait" src={hero.portrait} alt="" />
+          <img
+            className="character-portrait"
+            src={assetUrl(hero.portrait)}
+            alt=""
+          />
         )}
         <label className="character-select">
           Character
@@ -108,7 +113,7 @@ export default function CharacterPanel({ draft, onChange }) {
           <div className="ability-ranks">
             {hero.abilities.map((a) => (
               <label className="ability-rank" key={a.id}>
-                <img src={a.icon} alt="" />
+                <img src={assetUrl(a.icon)} alt="" />
                 <span>
                   {a.slot}. {a.name}
                   <small>
@@ -144,7 +149,7 @@ export default function CharacterPanel({ draft, onChange }) {
               <h3>Equipped imbues</h3>
               {imbuables.map((i) => (
                 <label key={i.id}>
-                  <img src={i.icon} alt="" />
+                  <img src={assetUrl(i.icon)} alt="" />
                   <span>{i.name}</span>
                   <select
                     aria-label={`${i.name} imbue target`}

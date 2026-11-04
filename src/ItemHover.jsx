@@ -1,3 +1,4 @@
+import { assetUrl } from "./assets.js";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { byId, items } from "./model";
@@ -147,11 +148,11 @@ export default function ItemHover({
           >
             <div className="tooltip-surface">
               <div className="tooltip-heading">
-                <img src={item.icon} alt="" />
+                <img src={assetUrl(item.icon)} alt="" />
                 <div>
                   <h3>{item.name}</h3>
                   <div className="tooltip-price">
-                    <img src="/souls.png" alt="" />
+                    <img src={assetUrl("/souls.png")} alt="" />
                     {item.cost.toLocaleString("en-US")}
                     <span>souls</span>
                     <small>
@@ -212,7 +213,7 @@ export default function ItemHover({
                       .filter((id) => byId[id])
                       .map((id) => (
                         <div key={id}>
-                          <img src={byId[id].icon} alt="" />
+                          <img src={assetUrl(byId[id].icon)} alt="" />
                           <span>{byId[id].name}</span>
                           <small>{byId[id].cost.toLocaleString("en-US")}</small>
                         </div>
@@ -226,7 +227,7 @@ export default function ItemHover({
                       .filter((i) => i.components.includes(item.id))
                       .map((i) => (
                         <div key={i.id}>
-                          <img src={i.icon} alt="" />
+                          <img src={assetUrl(i.icon)} alt="" />
                           <span>{i.name}</span>
                           <small>{i.cost.toLocaleString("en-US")}</small>
                         </div>
