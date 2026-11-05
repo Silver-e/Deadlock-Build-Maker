@@ -1293,8 +1293,7 @@ function App() {
           >
             <h2 id="delete-title">Delete this draft?</h2>
             <p>
-              â€œ
-              {drafts.find((d) => d.id === deleteId)?.name || "Untitled build"}
+              “{drafts.find((d) => d.id === deleteId)?.name || "Untitled build"}
               ” will be removed from this computer.
             </p>
             <div>
