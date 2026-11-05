@@ -15,6 +15,7 @@ import {
   uniqueDraftItems,
   snapshot,
 } from "./model";
+import { itemMatchesStat, itemStatLabels } from "./itemSearch.js";
 import "./style.css";
 import "./characters.css";
 import EquippedStats from "./EquippedStats";
@@ -108,6 +109,7 @@ function App() {
     [current, setCurrent] = useState(boot.current || boot.drafts[0].id),
     [tab, setTab] = useState("Weapon"),
     [search, setSearch] = useState(""),
+    [statSearch, setStatSearch] = useState(""),
     [tier, setTier] = useState(0),
     [activeOnly, setActiveOnly] = useState(false),
     [selected, setSelected] = useState(boot.drafts[0].categories[0].id),
@@ -410,6 +412,7 @@ function App() {
       i.type === tab &&
       (!tier || i.tier === tier) &&
       (!activeOnly || i.active) &&
+      itemMatchesStat(i, statSearch) &&
       `${i.name} ${i.description} ${i.stats.join(" ")}`
         .toLowerCase()
         .includes(search.toLowerCase()),
@@ -805,6 +808,33 @@ function App() {
                   </button>
                 )}
               </label>
+              <label className="search">
+                <Icon name="search" />
+                <input
+                  aria-label="Search stats"
+                  aria-describedby="stat-search-help"
+                  placeholder="Search stats"
+                  list="item-stat-options"
+                  value={statSearch}
+                  onChange={(e) => setStatSearch(e.target.value)}
+                />
+                {statSearch && (
+                  <button
+                    aria-label="Clear stat search"
+                    className="icon-button"
+                    onClick={() => setStatSearch("")}
+                  >
+                    <Icon name="close" size={16} />
+                  </button>
+                )}
+              </label>
+              <datalist id="item-stat-options">
+                {itemStatLabels(items.filter((i) => i.type === tab)).map(
+                  (label) => (
+                    <option key={label} value={label} />
+                  ),
+                )}
+              </datalist>
               <select
                 aria-label="Price tier"
                 value={tier}
@@ -826,6 +856,10 @@ function App() {
                 Active only
               </label>
             </div>
+            <p id="stat-search-help" className="stat-search-help">
+              Stat search includes permanent, conditional, and activated
+              effects.
+            </p>
             <div className="shop-content">
               {[1, 2, 3, 4].map((t) => {
                 const group = filtered.filter((i) => i.tier === t);
@@ -858,6 +892,7 @@ function App() {
                   <button
                     onClick={() => {
                       setSearch("");
+                      setStatSearch("");
                       setTier(0);
                       setActiveOnly(false);
                     }}
@@ -1258,7 +1293,8 @@ function App() {
           >
             <h2 id="delete-title">Delete this draft?</h2>
             <p>
-              “{drafts.find((d) => d.id === deleteId)?.name || "Untitled build"}
+              â€œ
+              {drafts.find((d) => d.id === deleteId)?.name || "Untitled build"}
               ” will be removed from this computer.
             </p>
             <div>

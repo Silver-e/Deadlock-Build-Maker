@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { build, preview } from "vite";
 import { chromium } from "playwright";
+import { items } from "../src/model.js";
+import { itemMatchesStat } from "../src/itemSearch.js";
 
 // Deliberately use a different folder to catch hardcoded repository names.
 const base = "/pages-smoke-test/";
@@ -50,6 +52,41 @@ try {
         Promise.all(images.map((image) => image.decode())),
       );
   }
+  for (const type of ["Weapon", "Spirit", "Vitality"]) {
+    await nav.getByRole("button", { name: type, exact: true }).click();
+    const search = page.getByRole("combobox", {
+      name: "Search stats",
+      exact: true,
+    });
+    await search.fill("Weapon Damage");
+    const expected = items.filter(
+      (item) => item.type === type && itemMatchesStat(item, "Weapon Damage"),
+    );
+    assert.equal(
+      await page.locator('.shop-grid button[aria-label^="Inspect "]').count(),
+      expected.length,
+    );
+    for (const item of expected) {
+      assert.equal(
+        await page
+          .getByRole("button", { name: "Inspect " + item.name, exact: true })
+          .count(),
+        1,
+      );
+    }
+    await search.fill("no such stat exists");
+    await page.getByRole("heading", { name: "No matching items" }).waitFor();
+    await page
+      .getByRole("button", { name: "Reset filters", exact: true })
+      .click();
+    assert.equal(await search.inputValue(), "");
+    await search.fill("health");
+    await page
+      .getByRole("button", { name: "Clear stat search", exact: true })
+      .click();
+    assert.equal(await search.inputValue(), "");
+  }
+  await nav.getByRole("button", { name: /^Build/ }).click();
   await page.evaluate(() => document.fonts.ready);
   await page.reload();
   assert.equal(

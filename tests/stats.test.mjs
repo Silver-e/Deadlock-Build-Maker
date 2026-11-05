@@ -110,3 +110,42 @@ test("lifesteal and duration use multiplicative stacking, removing equipment rem
   );
   assert.equal(result.effects.length, 0);
 });
+
+// Stat filtering must include bonuses beyond the permanent stat rows.
+import { itemMatchesStat, itemStatLabels } from "../src/itemSearch.js";
+test("stat search includes permanent, conditional, active and prose bonuses", () => {
+  for (const item of items) {
+    for (const line of [
+      ...item.stats,
+      ...item.effectGroups.flatMap((e) => e.stats),
+    ]) {
+      const stat = parseStat(line);
+      if (stat)
+        assert.ok(itemMatchesStat(item, stat.label), `${item.name}: ${line}`);
+    }
+  }
+  assert.ok(
+    itemMatchesStat(
+      items.find((i) => i.name === "Close Quarters"),
+      "  WEAPON damage ",
+    ),
+  );
+  assert.ok(
+    itemMatchesStat(
+      {
+        effectGroups: [
+          {
+            kind: "Active",
+            description: "Gain movement speed after activation",
+          },
+        ],
+      },
+      "movement speed",
+    ),
+  );
+  assert.ok(
+    !itemMatchesStat({ name: "Spirit Power", stats: [] }, "spirit power"),
+  );
+  assert.ok(itemMatchesStat({}, "  "));
+  assert.ok(itemStatLabels(items).includes("Weapon Damage"));
+});

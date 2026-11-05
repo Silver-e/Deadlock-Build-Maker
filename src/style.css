@@ -2815,3 +2815,16 @@ footer {
 .category.optional-category .optional-toggle input {
   accent-color: #b7c9ed;
 }
+
+.shop-filters {
+  flex-wrap: wrap;
+}
+.shop-filters .search {
+  min-width: 180px;
+}
+.stat-search-help {
+  margin: 0;
+  padding: 0 24px 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
