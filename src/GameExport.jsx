@@ -46,6 +46,13 @@ export default function GameExport({ draft }) {
       </button>
       {result && (
         <div className="game-export-result">
+          <button
+            className="export-close"
+            onClick={() => setResult(null)}
+            aria-label="Close export details"
+          >
+            Close
+          </button>
           <p role="status">
             {result.error ||
               (result.copied

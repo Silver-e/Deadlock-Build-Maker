@@ -1847,15 +1847,42 @@ footer {
   align-items: center;
 }
 .game-export {
-  padding: 12px 24px;
+  flex-shrink: 0;
+}
+.masthead {
+  position: relative;
 }
 .game-export > button {
   font-size: 14px;
   padding: 8px 12px;
 }
 .game-export-result {
-  margin-top: 12px;
-  max-width: 65ch;
+  position: absolute;
+  top: 100%;
+  right: 16px;
+  z-index: 100;
+  width: min(480px, calc(100vw - 32px));
+  padding: 16px;
+  background: #2d3228;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px #0006;
+}
+.export-close {
+  float: right;
+  margin: 0 0 8px 12px;
+}
+@media (max-width: 800px) {
+  .masthead {
+    flex-wrap: wrap;
+  }
+  .header-actions {
+    flex-wrap: wrap;
+  }
+  .game-export > button {
+    font-size: 12px;
+    padding: 8px;
+  }
 }
 .game-export-result p {
   margin-bottom: 8px;

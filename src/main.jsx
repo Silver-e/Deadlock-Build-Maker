@@ -432,6 +432,7 @@ function App() {
             <Icon name={saved ? "check" : "save"} size={14} />
             {saved ? "Saved on this computer" : "Not saved"}
           </span>
+          <GameExport draft={draft} />
           <button onClick={() => setLibrary(!library)} aria-expanded={library}>
             <Icon name="folder" />
             My drafts <span className="count">{drafts.length}</span>
@@ -499,13 +500,6 @@ function App() {
             <Icon name="folder" />
             Build<span>{draft.categories.length} categories</span>
           </button>
-          <button
-            className={view === "abilities" ? "current" : ""}
-            aria-current={view === "abilities" ? "page" : undefined}
-            onClick={() => navigate("abilities")}
-          >
-            Ability point order
-          </button>
           {types.map((type) => (
             <button
               key={type}
@@ -522,6 +516,13 @@ function App() {
               {type}
             </button>
           ))}
+          <button
+            className={view === "abilities" ? "current" : ""}
+            aria-current={view === "abilities" ? "page" : undefined}
+            onClick={() => navigate("abilities")}
+          >
+            Ability point order
+          </button>
           <button
             className={
               view === "loadout" ? "current loadout-tab" : "loadout-tab"
@@ -563,7 +564,6 @@ function App() {
                 </button>
               </div>
             </div>
-            <GameExport draft={draft} />
             <div className="build-meta">
               <input
                 className="build-name"

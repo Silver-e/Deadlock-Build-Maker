@@ -17,6 +17,38 @@ try {
     return route.continue();
   });
   await page.goto("http://127.0.0.1:5173");
+  assert.deepEqual(
+    await page
+      .locator(".page-tabs button")
+      .allTextContents()
+      .then((names) => names.map((name) => name.trim()).slice(1, 5)),
+    ["Weapon", "Spirit", "Vitality", "Ability point order"],
+  );
+  assert.equal(
+    await page
+      .locator(".header-actions .game-export + button")
+      .innerText()
+      .then((text) => text.trim().startsWith("My drafts")),
+    true,
+  );
+  assert.equal(
+    await page.locator(".build-panel:visible .ability-plan").count(),
+    0,
+  );
+  await page
+    .getByRole("navigation", { name: "Planner pages" })
+    .getByRole("button", { name: "Ability point order", exact: true })
+    .click();
+  await page
+    .getByRole("region", { name: "Ability planner", exact: true })
+    .waitFor();
+  assert.equal(
+    await page
+      .getByRole("region", { name: "Build editor", exact: true })
+      .isVisible(),
+    false,
+  );
+  await page.locator(".page-tabs button").first().click();
   const copy = page.getByRole("button", {
     name: "Copy for Deadlock",
     exact: true,
