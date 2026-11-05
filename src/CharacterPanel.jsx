@@ -1,13 +1,6 @@
 import { assetUrl } from "./assets.js";
 import React from "react";
-import {
-  heroes,
-  heroById,
-  boonLevel,
-  abilityRank,
-  canImbue,
-  imbueTarget,
-} from "./heroes";
+import { heroes, heroById, boonLevel, imbueTarget } from "./heroes";
 import { byId } from "./model";
 
 export default function CharacterPanel({ draft, onChange }) {
@@ -104,82 +97,6 @@ export default function CharacterPanel({ draft, onChange }) {
           </p>
         )}
       </div>
-      {hero && (
-        <details className="character-settings">
-          <summary>
-            Ability upgrades & imbues
-            <span>
-              {hero.name} · {boonLevel(draft)} boons
-            </span>
-          </summary>
-          <div className="ability-ranks">
-            {hero.abilities.map((a) => (
-              <label className="ability-rank" key={a.id}>
-                <img src={assetUrl(a.icon)} alt="" />
-                <span>
-                  {a.slot}. {a.name}
-                  <small>
-                    {a.passive
-                      ? "Passive"
-                      : a.slot === "4"
-                        ? "Ultimate"
-                        : "Ability"}
-                  </small>
-                </span>
-                <select
-                  aria-label={`${a.name} upgrade`}
-                  value={abilityRank(draft, a.slot)}
-                  onChange={(e) =>
-                    onChange({
-                      abilityRanks: {
-                        ...draft.abilityRanks,
-                        [a.slot]: Number(e.target.value),
-                      },
-                    })
-                  }
-                >
-                  <option value={0}>Base</option>
-                  <option value={1}>Tier 1</option>
-                  <option value={2}>Tier 2</option>
-                  <option value={3}>Tier 3</option>
-                </select>
-              </label>
-            ))}
-          </div>
-          {imbuables.length > 0 && (
-            <div className="imbue-assignments">
-              <h3>Equipped imbues</h3>
-              {imbuables.map((i) => (
-                <label key={i.id}>
-                  <img src={assetUrl(i.icon)} alt="" />
-                  <span>{i.name}</span>
-                  <select
-                    aria-label={`${i.name} imbue target`}
-                    value={imbueTarget(draft, i) || ""}
-                    onChange={(e) =>
-                      onChange({
-                        imbues: { ...draft.imbues, [i.id]: e.target.value },
-                      })
-                    }
-                  >
-                    {hero.abilities
-                      .filter((a) => canImbue(i, a))
-                      .map((a) => (
-                        <option key={a.slot} value={a.slot}>
-                          {a.name}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-              ))}
-            </div>
-          )}
-          <p>
-            Upgrades include previous tiers. An imbue affects its assigned
-            ability; preview targets use the first eligible ability if needed.
-          </p>
-        </details>
-      )}
     </section>
   );
 }

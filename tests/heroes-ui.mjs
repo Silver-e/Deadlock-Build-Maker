@@ -51,14 +51,21 @@ assert.ok(
 );
 await page.keyboard.press("Escape");
 await duration.click({ modifiers: ["Shift"] });
-await page.locator(".character-settings > summary").click();
+await page
+  .getByRole("navigation", { name: "Planner pages" })
+  .getByRole("button", { name: "Abilities", exact: true })
+  .click();
 assert.equal(
   await page.getByLabel("Duration Extender imbue target").inputValue(),
   "3",
 );
-await page.getByLabel('Item preview imbue target').selectOption('1');
-assert.equal(await page.getByLabel('Duration Extender imbue target').inputValue(), '3', 'Changing a hypothetical target must not retarget equipped imbues');
-await page.getByLabel('Item preview imbue target').selectOption('3');
+await page.getByLabel("Item preview imbue target").selectOption("1");
+assert.equal(
+  await page.getByLabel("Duration Extender imbue target").inputValue(),
+  "3",
+  "Changing a hypothetical target must not retarget equipped imbues",
+);
+await page.getByLabel("Item preview imbue target").selectOption("3");
 await page.getByLabel("Afterburn upgrade").selectOption("3");
 await page.getByLabel("Character boon level").selectOption("10");
 await page.locator(".page-tabs .loadout-tab").click();
@@ -96,7 +103,10 @@ assert.equal(
   "hero_inferno",
 );
 assert.equal(await page.getByLabel("Character boon level").inputValue(), "10");
-await page.locator(".character-settings > summary").click();
+await page
+  .getByRole("navigation", { name: "Planner pages" })
+  .getByRole("button", { name: "Abilities", exact: true })
+  .click();
 assert.equal(await page.getByLabel("Afterburn upgrade").inputValue(), "3");
 assert.equal(
   await page.getByLabel("Duration Extender imbue target").inputValue(),
@@ -124,7 +134,10 @@ assert.equal(
   "hero_inferno",
 );
 await page.setViewportSize({ width: 390, height: 844 });
-await page.locator(".character-settings > summary").click();
+await page
+  .getByRole("navigation", { name: "Planner pages" })
+  .getByRole("button", { name: "Abilities", exact: true })
+  .click();
 await page.screenshot({
   path: "test-results/character-mobile.png",
   fullPage: true,

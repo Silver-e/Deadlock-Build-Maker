@@ -22,7 +22,7 @@ try {
       .locator(".page-tabs button")
       .allTextContents()
       .then((names) => names.map((name) => name.trim()).slice(1, 5)),
-    ["Weapon", "Spirit", "Vitality", "Ability point order"],
+    ["Weapon", "Spirit", "Vitality", "Abilities"],
   );
   assert.equal(
     await page
@@ -37,7 +37,7 @@ try {
   );
   await page
     .getByRole("navigation", { name: "Planner pages" })
-    .getByRole("button", { name: "Ability point order", exact: true })
+    .getByRole("button", { name: "Abilities", exact: true })
     .click();
   await page
     .getByRole("region", { name: "Ability planner", exact: true })

@@ -21,9 +21,10 @@ try {
     return route.continue();
   });
   await page.goto("http://127.0.0.1:5173");
+  await fs.mkdir("test-results", { recursive: true });
   const abilityTab = page
     .getByRole("navigation", { name: "Planner pages" })
-    .getByRole("button", { name: "Ability point order", exact: true });
+    .getByRole("button", { name: "Abilities", exact: true });
   await abilityTab.click();
   await page
     .getByText("Choose a character above to plan ability unlocks and upgrades.")
@@ -32,6 +33,41 @@ try {
     .getByLabel("Build character", { exact: true })
     .selectOption("hero_inferno");
   const hero = heroes.find((h) => h.id === "hero_inferno");
+  const details = page.getByRole("region", {
+    name: "Ability upgrades & imbues",
+    exact: true,
+  });
+  assert.equal(await details.getByRole("article").count(), 4);
+  for (const ability of hero.abilities) {
+    const article = details.getByRole("article", {
+      name: ability.name,
+      exact: true,
+    });
+    for (const text of ability.descriptions)
+      assert.ok((await article.innerText()).includes(text));
+    for (const text of ability.upgradeDescriptions.filter(Boolean))
+      assert.ok((await article.innerText()).includes(text));
+    assert.equal(
+      await article.locator(".ability-detail-upgrades li").count(),
+      3,
+    );
+  }
+  const afterburn = details.getByRole("article", {
+    name: "Afterburn",
+    exact: true,
+  });
+  const baseValues = await afterburn.locator("dl").innerText();
+  await page.getByLabel("Character boon level").selectOption("35");
+  assert.equal(await afterburn.locator("dl").innerText(), baseValues);
+  await afterburn
+    .getByLabel("Afterburn upgrade", { exact: true })
+    .selectOption("3");
+  assert.notEqual(await afterburn.locator("dl").innerText(), baseValues);
+  assert.equal(await afterburn.locator('li[data-active="true"]').count(), 3);
+  await page.screenshot({
+    path: "test-results/abilities-details-desktop.png",
+    fullPage: true,
+  });
   const panel = page.getByRole("region", {
     name: "Ability point order",
     exact: true,

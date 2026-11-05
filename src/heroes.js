@@ -284,6 +284,16 @@ function abilityModifiers(draft, ability, ids, context) {
   return modifiers;
 }
 
+export function baseAbilityStats(draft) {
+  return abilityStats({
+    heroId: draft.heroId,
+    abilityRanks: draft.abilityRanks || {},
+    boons: 0,
+    equipped: [],
+    imbues: {},
+  });
+}
+
 export function abilityStats(
   draft,
   ids = draft.equipped,

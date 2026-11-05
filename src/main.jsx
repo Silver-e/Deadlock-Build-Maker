@@ -27,6 +27,7 @@ import { heroById, imbueTarget } from "./heroes";
 import useItemDrag from "./useItemDrag";
 import GameExport from "./GameExport";
 import AbilityOrder from "./AbilityOrder";
+import AbilityDetails from "./AbilityDetails";
 const KEY = "deadlock-local-drafts-v1";
 const money = (n) => n.toLocaleString("en-US");
 function Icon({ name, size = 18 }) {
@@ -521,7 +522,7 @@ function App() {
             aria-current={view === "abilities" ? "page" : undefined}
             onClick={() => navigate("abilities")}
           >
-            Ability point order
+            Abilities
           </button>
           <button
             className={
@@ -733,7 +734,7 @@ function App() {
             aria-label="Ability planner"
           >
             <div className="build-toolbar">
-              <h2>Ability point order</h2>
+              <h2>Abilities</h2>
               <button
                 onClick={undo}
                 disabled={!history.length}
@@ -747,6 +748,10 @@ function App() {
               onChange={(abilityOrder) =>
                 update((d) => ({ ...d, abilityOrder }))
               }
+            />
+            <AbilityDetails
+              draft={draft}
+              onChange={(fields) => update((d) => ({ ...d, ...fields }))}
             />
           </section>
           <section

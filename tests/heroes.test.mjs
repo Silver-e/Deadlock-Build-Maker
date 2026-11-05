@@ -6,6 +6,7 @@ import {
   heroById,
   characterStats,
   abilityStats,
+  baseAbilityStats,
   itemComparison,
   canImbue,
   imbueTarget,
@@ -13,6 +14,27 @@ import {
 } from "../src/heroes.js";
 import { makeDraft, validDraft, items } from "../src/model.js";
 const item = (name) => items.find((i) => i.name === name);
+test("Abilities baseline ignores equipment, boons, imbues and combat conditions while retaining selected tiers", () => {
+  const clean = {
+    ...makeDraft(),
+    heroId: "hero_inferno",
+    abilityRanks: { 3: 3 },
+  };
+  const modified = {
+    ...clean,
+    boons: 35,
+    equipped: items.map((i) => i.id),
+    imbues: {},
+    combat: { enabled: true, lycan: true },
+  };
+  for (const i of items.filter((i) => i.imbue)) modified.imbues[i.id] = "3";
+  assert.deepEqual(baseAbilityStats(modified), baseAbilityStats(clean));
+  assert.notDeepEqual(abilityStats(modified), baseAbilityStats(modified));
+  assert.notDeepEqual(
+    baseAbilityStats(clean),
+    baseAbilityStats({ ...clean, abilityRanks: {} }),
+  );
+});
 const draft = (changes = {}) => ({
   ...makeDraft(),
   heroId: "hero_inferno",

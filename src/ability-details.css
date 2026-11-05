@@ -1,0 +1,117 @@
+.ability-details {
+  padding: 0 24px 24px;
+}
+.ability-details > h2 {
+  font-family: Occult, serif;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+.ability-details-note {
+  max-width: 75ch;
+  color: #c7ceb9;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.ability-detail {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin-top: 24px;
+  overflow: hidden;
+}
+.ability-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: #3b4334;
+  flex-wrap: wrap;
+}
+.ability-detail-header > img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+.ability-detail-header h3 {
+  font-family: Occult, serif;
+  font-size: 20px;
+}
+.ability-detail-header p {
+  font-size: 12px;
+  color: #c7ceb9;
+  margin-top: 4px;
+}
+.ability-detail-header label {
+  display: grid;
+  gap: 4px;
+  margin-left: auto;
+  font-size: 12px;
+  color: #c7ceb9;
+}
+.ability-detail-header select {
+  font-size: 14px;
+}
+.ability-detail-content {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  background: #252a21;
+}
+.ability-detail-upgrades {
+  padding: 16px 24px 24px;
+}
+.ability-detail-upgrades h4 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+.ability-detail-upgrades ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ability-detail-upgrades li {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.ability-detail-upgrades li[data-active="true"] {
+  background: #343e2b;
+  border-color: #8caf56;
+}
+.ability-detail-upgrades li > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ability-detail-upgrades li span {
+  color: #cdb9e1;
+  font-size: 12px;
+}
+.ability-detail-upgrades li p {
+  margin-top: 8px;
+  line-height: 1.6;
+  color: var(--cream);
+}
+@media (max-width: 1000px) {
+  .ability-detail-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .ability-details {
+    padding: 0 16px 16px;
+  }
+  .ability-detail-header {
+    padding: 16px;
+    gap: 12px;
+  }
+  .ability-detail-header > div {
+    flex: 1;
+  }
+  .ability-detail-header label {
+    width: 100%;
+    margin-left: 0;
+  }
+  .ability-details .character-ability-body dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -149,10 +149,21 @@ await equipItem("Spirit", "Mystic Expansion");
 await equipItem("Spirit", "Cold Front");
 await build();
 await shot("desktop");
-assert.ok((await page.locator(".build-panel").boundingBox()).width > 1000);
+assert.ok(
+  (
+    await page
+      .getByRole("region", { name: "Build editor", exact: true })
+      .boundingBox()
+  ).width > 1000,
+);
 await nav("Weapon").click();
 await shot("shop");
-assert.equal(await page.locator(".build-panel").isVisible(), false);
+assert.equal(
+  await page
+    .getByRole("region", { name: "Build editor", exact: true })
+    .isVisible(),
+  false,
+);
 assert.equal(await page.locator(".loadout-panel").isVisible(), false);
 await loadout();
 assert.equal(await page.locator(".shop-panel").isVisible(), false);

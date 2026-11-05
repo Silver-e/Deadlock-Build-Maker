@@ -46,7 +46,7 @@ Item and hero data remain bundled snapshots; refreshing them and pushing to
 
 ## Use
 
-Choose a **Character** for each draft. Its portrait appears beside the name in **My drafts**. Existing drafts remain usable without a character. Set **Boons** and open **Ability upgrades & imbues** to choose cumulative ability tiers and the targets of equipped imbue items. These settings save with the draft and support Undo.
+Choose a **Character** for each draft. Its portrait appears beside the name in **My drafts**. Existing drafts remain usable without a character. Open the **Abilities** tab after Vitality for the ability point map and **Ability upgrades & imbues**. Each ability shows its description, default stats, effects, and all three upgrade descriptions and AP costs. Select a preview rank or assign equipped imbue targets; these settings save with the draft and support Undo. Ability details use baseline character values at the selected tier, excluding items, boons, imbues, and combat conditions. **Loadout & stats** shows the calculated values with the draft's equipment, boons, tiers, and imbues instead.
 
 With a character selected, hovering a shop/build item automatically shows the affected abilities' **before → after** values against the equipped loadout. No ALT key is needed. The info button includes the same comparison for touch users. The **New item imbue preview** target controls hypothetical imbues; equipped imbues keep their own assignments. Upgrades replace their components in the comparison. For an equipped item, the comparison is **without the item → current loadout**. A full inventory is identified as hypothetical.
 
@@ -113,7 +113,7 @@ Item descriptions, statistics, relationships, and investment table: [Deadlock Wi
 
 The **Ability point order** map uses four ability rows and sixteen numbered steps. Choose a row in the next column to add its unlock or next upgrade. Upgrades cost 1, 2, and 5 AP. Choose another row in an earlier column to change it; fully assigned rows swap steps. **Undo step** removes the last entry and **Reset order** clears the plan. Both support the editor's Undo button. The grid scrolls sideways on narrow screens, keeping ability icons visible.
 
-Plans save per draft and export to the game's recommendation system through `ability_order.currency_changes`. Partial plans export their planned prefix. Changing characters clears the plan and Undo restores it. Old drafts start with an empty plan. Silver's transformed preview plans the normal Silver ability slots. Character-panel rank selectors remain separate stat preview controls. Run `npm run test:abilities` against the dev server to check editing, persistence, export, and mobile behavior.
+Plans save per draft and export to the game's recommendation system through `ability_order.currency_changes`. Partial plans export their planned prefix. Changing characters clears the plan and Undo restores it. Old drafts start with an empty plan. Silver's transformed preview plans the normal Silver ability slots. Rank selectors in Abilities remain separate from the planned order. Run `npm run test:abilities` against the dev server to check editing, persistence, export, and mobile behavior.
 
 Select a character, draft your items, then click **Copy for Deadlock**. In the game, open **Create New Build**, click **Paste**, then save. If browser clipboard access is blocked, select the generated code and copy it manually. Export runs locally, including compression, and makes no network requests.
 

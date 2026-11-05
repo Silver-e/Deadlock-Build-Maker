@@ -30,12 +30,16 @@ try {
   await page.goto(origin + base);
   await page.getByLabel("Build name", { exact: true }).fill("Pages smoke test");
   await page.getByLabel("Build character").selectOption({ index: 1 });
-  await page.locator(".character-settings > summary").click();
+  await page
+    .getByRole("navigation", { name: "Planner pages" })
+    .getByRole("button", { name: "Abilities", exact: true })
+    .click();
   const nav = page.getByRole("navigation", { name: "Planner pages" });
   for (const name of [
     "Weapon",
     "Vitality",
     "Spirit",
+    "Abilities",
     "Loadout & stats",
     "Build",
   ]) {

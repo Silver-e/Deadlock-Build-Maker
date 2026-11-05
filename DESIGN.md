@@ -215,6 +215,8 @@ The fixed detail panel is 360px wide, constrained to the viewport. Its accent he
 
 ### Ability point order
 
+The navigation tab is Abilities, placed after Vitality. Its ability reference follows the map: olive headers with ability icons, baseline description and stat columns, and three upgrade rows with AP costs. Applied preview tiers use the existing selected olive and vitality border. The details stack on narrow screens. Preview rank controls and equipped imbue assignments live here; calculated loadout abilities stay on Loadout & stats.
+
 The build editor follows CitadelAbilityOrder's cream icon rail, four alternating dark rows, purple unlock arrows, and muted upgrade arrows with point costs. Sixteen numbered columns show the plan, with the next column highlighted in olive. On narrow screens the grid scrolls horizontally with sticky ability icons. Undo step and Reset order use small toolbar controls. Visual source: https://github.com/SteamDatabase/GameTracking-Deadlock/blob/master/game/citadel/pak01_dir/panorama/styles/citadel_ui_ability_order.css
 
 ### Do:
