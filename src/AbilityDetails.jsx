@@ -108,8 +108,9 @@ export default function AbilityDetails({ draft, onChange }) {
                     </dt>
                     <dd>
                       {statNumber(prop.total, prop.unit, false)}
-                      {abilityScaling(prop).map((text) => (
+                      {abilityScaling(prop).map(({ icon, text }) => (
                         <small className="ability-stat-scaling" key={text}>
+                          <StatIcon stat={icon} size={14} />
                           {text}
                         </small>
                       ))}

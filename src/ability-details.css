@@ -2,7 +2,10 @@
   padding: 0 24px 24px;
 }
 .ability-stat-scaling {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
   margin-top: 4px;
   color: #cdb9e1;
   font-size: 12px;

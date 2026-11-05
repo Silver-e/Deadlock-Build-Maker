@@ -49,7 +49,11 @@ try {
       const row = article.locator(`[data-ability-property="${prop.Key}"]`);
       assert.deepEqual(
         await row.locator(".ability-stat-scaling").allTextContents(),
-        abilityScaling(prop),
+        abilityScaling(prop).map((scale) => scale.text),
+      );
+      assert.equal(
+        await row.locator(".ability-stat-scaling .stat-symbol").count(),
+        abilityScaling(prop).length,
       );
     }
   }

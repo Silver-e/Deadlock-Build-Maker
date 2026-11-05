@@ -23,11 +23,27 @@ export function abilityScaling(property) {
     .filter((s) => s && Number(s.Value) !== 0)
     .map((s) => {
       const coefficient = Number(s.Value);
-      if (sources[s.Type])
-        return `Scales with ${sources[s.Type]} × ${coefficient}`;
+      if (sources[s.Type]) {
+        const source = sources[s.Type];
+        return {
+          icon:
+            s.Type === "spirit"
+              ? "Spirit scaling"
+              : s.Type === "power_increase"
+                ? "Boon scaling"
+                : source,
+          text: `Scales with ${source} × ${coefficient}`,
+        };
+      }
       if (s.Type === "weapon_power")
-        return `Scales with Base Weapon Damage × ${1 + coefficient / 100}`;
+        return {
+          icon: "Weapon Damage",
+          text: `Scales with Base Weapon Damage × ${1 + coefficient / 100}`,
+        };
       const source = modifiers[s.Type] || s.Type.replaceAll("_", " ");
-      return `Affected by ${source}${coefficient === 1 ? "" : ` × ${coefficient}`}`;
+      return {
+        icon: source,
+        text: `Affected by ${source}${coefficient === 1 ? "" : ` × ${coefficient}`}`,
+      };
     });
 }
