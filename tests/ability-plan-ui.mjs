@@ -21,6 +21,10 @@ try {
     return route.continue();
   });
   await page.goto("http://127.0.0.1:5173");
+  const abilityTab = page
+    .getByRole("navigation", { name: "Planner pages" })
+    .getByRole("button", { name: "Ability point order", exact: true });
+  await abilityTab.click();
   await page
     .getByText("Choose a character above to plan ability unlocks and upgrades.")
     .waitFor();
@@ -52,6 +56,7 @@ try {
   await choose(2, "1", 0);
   assert.deepEqual(await readOrder(), ["3", "3", "1"]);
   await page.reload();
+  await abilityTab.click();
   assert.equal(await panel.locator('button[aria-pressed="true"]').count(), 3);
   await panel.getByRole("button", { name: "Undo step", exact: true }).click();
   assert.deepEqual(await readOrder(), ["3", "3"]);
@@ -103,6 +108,7 @@ try {
     .waitFor();
   await fs.mkdir("test-results", { recursive: true });
   await panel.screenshot({ path: "test-results/ability-plan-desktop.png" });
+  await page.locator(".page-tabs button").first().click();
   await page
     .getByRole("button", { name: "Copy for Deadlock", exact: true })
     .click();
@@ -121,6 +127,7 @@ try {
   assert.equal(decoded.details.abilityOrder.currencyChanges.length, 16);
   assert.equal(decoded.details.abilityOrder.currencyChanges[0].currencyType, 2);
   assert.equal(decoded.details.abilityOrder.currencyChanges[1].delta, -1);
+  await abilityTab.click();
   await panel.getByRole("button", { name: "Reset order", exact: true }).click();
   assert.deepEqual(await readOrder(), []);
   await page.getByRole("button", { name: "Undo", exact: true }).click();

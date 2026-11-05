@@ -499,6 +499,13 @@ function App() {
             <Icon name="folder" />
             Build<span>{draft.categories.length} categories</span>
           </button>
+          <button
+            className={view === "abilities" ? "current" : ""}
+            aria-current={view === "abilities" ? "page" : undefined}
+            onClick={() => navigate("abilities")}
+          >
+            Ability point order
+          </button>
           {types.map((type) => (
             <button
               key={type}
@@ -578,12 +585,6 @@ function App() {
                 }
               />
             </div>
-            <AbilityOrder
-              draft={draft}
-              onChange={(abilityOrder) =>
-                update((d) => ({ ...d, abilityOrder }))
-              }
-            />
             <div className="categories-header">
               <span>{allDraftIds.length} draft items</span>
               <button
@@ -725,6 +726,28 @@ function App() {
                 for category options.
               </p>
             </div>
+          </section>
+          <section
+            hidden={view !== "abilities"}
+            className="build-panel"
+            aria-label="Ability planner"
+          >
+            <div className="build-toolbar">
+              <h2>Ability point order</h2>
+              <button
+                onClick={undo}
+                disabled={!history.length}
+                title="Undo last change (Ctrl+Z)"
+              >
+                <Icon name="undo" size={16} /> Undo
+              </button>
+            </div>
+            <AbilityOrder
+              draft={draft}
+              onChange={(abilityOrder) =>
+                update((d) => ({ ...d, abilityOrder }))
+              }
+            />
           </section>
           <section
             hidden={view !== "shop"}
