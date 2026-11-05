@@ -86,6 +86,58 @@ try {
       .click();
     assert.equal(await search.inputValue(), "");
   }
+  // Exercise the custom picker with a keyboard and a real touch context.
+  await nav.getByRole("button", { name: "Weapon", exact: true }).click();
+  const picker = page.getByRole("combobox", { name: "Search stats" });
+  await picker.fill("fire");
+  await picker.press("ArrowDown");
+  await picker.press("Enter");
+  assert.equal(await picker.inputValue(), "Fire Rate");
+  assert.equal(await page.getByRole("listbox").count(), 0);
+  await picker.click();
+  await picker.press("Escape");
+  assert.equal(await picker.getAttribute("aria-expanded"), "false");
+  const touch = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  const mobile = await touch.newPage();
+  await mobile.goto(origin + base);
+  await mobile
+    .getByRole("navigation", { name: "Planner pages" })
+    .getByRole("button", { name: "Weapon", exact: true })
+    .tap();
+  await mobile.getByRole("button", { name: "Browse stats", exact: true }).tap();
+  const mobilePicker = mobile.getByRole("combobox", { name: "Search stats" });
+  await mobilePicker.fill("fire");
+  const option = mobile.getByRole("option", { name: "Fire Rate", exact: true });
+  assert.equal(await option.locator("img").count(), 1);
+  const box = await mobile.getByRole("listbox").boundingBox();
+  assert.ok(box.x >= 0 && box.x + box.width <= 390);
+  assert.ok((await option.boundingBox()).height >= 44);
+  await option.tap();
+  assert.equal(await mobilePicker.inputValue(), "Fire Rate");
+  assert.equal(await mobile.getByRole("listbox").count(), 0);
+  await mobile.getByRole("button", { name: "Browse stats", exact: true }).tap();
+  await mobile
+    .getByRole("button", { name: "Close stat suggestions", exact: true })
+    .tap();
+  assert.equal(await mobilePicker.getAttribute("aria-expanded"), "false");
+  await mobilePicker.fill("unlisted stat");
+  await mobile.getByText("No preset stats match.", { exact: false }).waitFor();
+  await mobile.screenshot({
+    path: "test-results/stat-picker-mobile-empty.png",
+  });
+  await mobile
+    .getByRole("button", { name: "Clear stat search", exact: true })
+    .tap();
+  await mobile.screenshot({ path: "test-results/stat-picker-mobile.png" });
+  await page
+    .getByRole("button", { name: "Clear stat search", exact: true })
+    .click();
+  await page.screenshot({ path: "test-results/stat-picker-desktop.png" });
+  await touch.close();
   await nav.getByRole("button", { name: /^Build/ }).click();
   await page.evaluate(() => document.fonts.ready);
   await page.reload();

@@ -15,6 +15,7 @@ import {
   uniqueDraftItems,
   snapshot,
 } from "./model";
+import StatPicker from "./StatPicker";
 import { itemMatchesStat, itemStatLabels } from "./itemSearch.js";
 import "./style.css";
 import "./characters.css";
@@ -808,33 +809,12 @@ function App() {
                   </button>
                 )}
               </label>
-              <label className="search">
-                <Icon name="search" />
-                <input
-                  aria-label="Search stats"
-                  aria-describedby="stat-search-help"
-                  placeholder="Search stats"
-                  list="item-stat-options"
-                  value={statSearch}
-                  onChange={(e) => setStatSearch(e.target.value)}
-                />
-                {statSearch && (
-                  <button
-                    aria-label="Clear stat search"
-                    className="icon-button"
-                    onClick={() => setStatSearch("")}
-                  >
-                    <Icon name="close" size={16} />
-                  </button>
-                )}
-              </label>
-              <datalist id="item-stat-options">
-                {itemStatLabels(items.filter((i) => i.type === tab)).map(
-                  (label) => (
-                    <option key={label} value={label} />
-                  ),
-                )}
-              </datalist>
+              <StatPicker
+                key={tab}
+                labels={itemStatLabels(items.filter((i) => i.type === tab))}
+                value={statSearch}
+                onChange={setStatSearch}
+              />
               <select
                 aria-label="Price tier"
                 value={tier}
