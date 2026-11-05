@@ -2,6 +2,8 @@
 
 A local recreation of the Curiosity Shop and build editor. No accounts, Steam integration, public build hosting, or runtime API calls.
 
+Agent contributors should follow [AGENTS.md](AGENTS.md): completed, validated changes are committed and pushed automatically so GitHub Pages can deploy the latest version.
+
 ## Run on Windows
 
 Double click **Start planner.cmd**, or run:
