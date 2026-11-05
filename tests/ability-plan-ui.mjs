@@ -4,6 +4,8 @@ import fs from "node:fs/promises";
 import protobuf from "protobufjs";
 import { zstdDecompressSync } from "node:zlib";
 import { heroes } from "../src/heroes.js";
+import { baseAbilityStats } from "../src/heroes.js";
+import { abilityScaling } from "../src/abilityScaling.js";
 
 const browser = await chromium.launch({ headless: true });
 try {
@@ -38,6 +40,19 @@ try {
     exact: true,
   });
   assert.equal(await details.getByRole("article").count(), 4);
+  for (const ability of baseAbilityStats({ heroId: hero.id })) {
+    const article = details.getByRole("article", {
+      name: ability.name,
+      exact: true,
+    });
+    for (const prop of ability.properties) {
+      const row = article.locator(`[data-ability-property="${prop.Key}"]`);
+      assert.deepEqual(
+        await row.locator(".ability-stat-scaling").allTextContents(),
+        abilityScaling(prop),
+      );
+    }
+  }
   for (const ability of hero.abilities) {
     const article = details.getByRole("article", {
       name: ability.name,

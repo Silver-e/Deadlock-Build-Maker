@@ -1,6 +1,15 @@
 .ability-details {
   padding: 0 24px 24px;
 }
+.ability-stat-scaling {
+  display: block;
+  margin-top: 4px;
+  color: #cdb9e1;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  text-wrap: pretty;
+}
 .ability-details > h2 {
   font-family: Occult, serif;
   font-size: 24px;

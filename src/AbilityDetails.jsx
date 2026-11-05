@@ -4,6 +4,7 @@ import { baseAbilityStats, heroById, canImbue, imbueTarget } from "./heroes.js";
 import { byId } from "./model.js";
 import { statNumber } from "./stats.js";
 import StatIcon from "./StatIcon";
+import { abilityScaling } from "./abilityScaling.js";
 import "./ability-details.css";
 
 export default function AbilityDetails({ draft, onChange }) {
@@ -105,7 +106,14 @@ export default function AbilityDetails({ draft, onChange }) {
                       <StatIcon stat={prop.Name} property={prop} />
                       {prop.label}
                     </dt>
-                    <dd>{statNumber(prop.total, prop.unit, false)}</dd>
+                    <dd>
+                      {statNumber(prop.total, prop.unit, false)}
+                      {abilityScaling(prop).map((text) => (
+                        <small className="ability-stat-scaling" key={text}>
+                          {text}
+                        </small>
+                      ))}
+                    </dd>
                   </div>
                 ))}
               </dl>
