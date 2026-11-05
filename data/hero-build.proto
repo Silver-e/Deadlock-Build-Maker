@@ -1,0 +1,53 @@
+// Source: https://raw.githubusercontent.com/SteamDatabase/Protobufs/master/deadlock/citadel_gcmessages_common.proto
+// Snapshot: 2026-11-05T07:03:33.466Z
+syntax = "proto2";
+message CMsgHeroBuild {
+
+	message BuildModEntry {
+		optional uint32 ability_id = 1;
+		optional string annotation = 2;
+		optional uint32 required_flex_slots = 3;
+		optional uint32 sell_priority = 4;
+		optional uint32 imbue_target_ability_id = 5;
+	}
+
+	message BuildModCategory {
+		repeated .CMsgHeroBuild.BuildModEntry mods = 1;
+		optional string name = 2;
+		optional string description = 3;
+		optional float width = 4;
+		optional float height = 5;
+		optional bool optional = 6;
+	}
+
+	message CurrencyChange {
+		optional uint32 ability_id = 1;
+		optional int32 currency_type = 2;
+		optional int32 delta = 3;
+		optional string annotation = 4;
+	}
+
+	message AbilityOrder {
+		repeated .CMsgHeroBuild.CurrencyChange currency_changes = 1;
+	}
+
+	message Details_V0 {
+		repeated .CMsgHeroBuild.BuildModCategory mod_categories = 1;
+		optional .CMsgHeroBuild.AbilityOrder ability_order = 2;
+	}
+
+	optional uint32 hero_build_id = 1;
+	optional uint32 hero_id = 2;
+	optional uint32 author_account_id = 3;
+	optional uint32 last_updated_timestamp = 4;
+	optional string name = 5;
+	optional string description = 6;
+	optional uint32 language = 7;
+	optional uint32 version = 8;
+	optional uint32 origin_build_id = 9;
+	optional .CMsgHeroBuild.Details_V0 details = 10;
+	repeated uint32 tags = 11;
+	optional bool development_build = 12;
+	optional uint32 publish_timestamp = 13;
+}
+

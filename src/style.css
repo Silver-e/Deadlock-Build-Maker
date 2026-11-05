@@ -1846,6 +1846,27 @@ footer {
   gap: 12px;
   align-items: center;
 }
+.game-export {
+  padding: 12px 24px;
+}
+.game-export > button {
+  font-size: 14px;
+  padding: 8px 12px;
+}
+.game-export-result {
+  margin-top: 12px;
+  max-width: 65ch;
+}
+.game-export-result p {
+  margin-bottom: 8px;
+}
+.game-export-result textarea {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  resize: vertical;
+  font-size: 12px;
+}
 .build-toolbar .cream-button {
   background: #e4dac1;
   color: #2a2e24;

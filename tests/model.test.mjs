@@ -24,7 +24,7 @@ test("moving draft items enforces one category without changing equipment", () =
   const moved = moveDraftItem(d, a, d.categories[1].id, 0);
   assert.deepEqual(
     moved.categories.map((c) => c.items),
-    [[b], [a, c], [], []],
+    [[b], [a, c], [], [], [], [], []],
   );
   assert.deepEqual(moved.equipped, [a]);
   assert.deepEqual(d, before);
@@ -67,33 +67,41 @@ test("legacy duplicate cleanup keeps the first occurrence and all draft settings
   const clean = uniqueDraftItems(d);
   assert.deepEqual(
     clean.categories.map((c) => c.items),
-    [[a], [b], [], []],
+    [[a], [b], [], [], [], [], []],
   );
   assert.deepEqual(clean.equipped, d.equipped);
   assert.deepEqual(
     clean.categories.map((c) => c.optional),
-    [false, false, false, true],
+    [false, true, false, true, false, true, true],
   );
   assert.deepEqual(d, before);
   assert.deepEqual(uniqueDraftItems(clean), clean);
   assert.ok(validDraft(clean));
 });
-test("new drafts use four game-phase categories with only Optional flagged", () => {
+test("new drafts use seven ordered categories with optional choices flagged", () => {
   const d = makeDraft();
   assert.deepEqual(
     d.categories.map((c) => c.name),
-    ["Early Game", "Mid Game", "Late Game", "Optional"],
+    [
+      "Early Game",
+      "Optional Early",
+      "Mid Game",
+      "Optional Mid",
+      "Late Game",
+      "Optional Late",
+      "Counter items",
+    ],
   );
   assert.deepEqual(
     d.categories.map((c) => c.optional),
-    [false, false, false, true],
+    [false, true, false, true, false, true, true],
   );
   assert.ok(validDraft(d));
   assert.deepEqual(
     JSON.parse(JSON.stringify(d)).categories.map((c) => c.optional),
-    [false, false, false, true],
+    [false, true, false, true, false, true, true],
   );
-  assert.equal(new Set(d.categories.map((c) => c.id)).size, 4);
+  assert.equal(new Set(d.categories.map((c) => c.id)).size, 7);
 });
 test("legacy drafts without optional flags remain valid and are not renamed", () => {
   const d = makeDraft();

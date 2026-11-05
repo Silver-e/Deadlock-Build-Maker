@@ -1,0 +1,102 @@
+{
+  "source": "https://api.deadlock-api.com/v1/builds?hero_id=6&limit=1",
+  "buildId": 1391,
+  "currencyChanges": [
+    {
+      "ability_id": 715762406,
+      "currency_type": 2,
+      "delta": -1,
+      "annotation": null
+    },
+    {
+      "ability_id": 715762406,
+      "currency_type": 1,
+      "delta": -1,
+      "annotation": null
+    },
+    {
+      "ability_id": 4072270083,
+      "currency_type": 2,
+      "delta": -1,
+      "annotation": null
+    },
+    {
+      "ability_id": 2824119765,
+      "currency_type": 2,
+      "delta": -1,
+      "annotation": null
+    },
+    {
+      "ability_id": 2824119765,
+      "currency_type": 1,
+      "delta": -1,
+      "annotation": null
+    },
+    {
+      "ability_id": 4072270083,
+      "currency_type": 1,
+      "delta": -1,
+      "annotation": null
+    },
+    {
+      "ability_id": 509856396,
+      "currency_type": 2,
+      "delta": -1,
+      "annotation": null
+    },
+    {
+      "ability_id": 509856396,
+      "currency_type": 1,
+      "delta": -1,
+      "annotation": null
+    },
+    {
+      "ability_id": 4072270083,
+      "currency_type": 1,
+      "delta": -2,
+      "annotation": null
+    },
+    {
+      "ability_id": 4072270083,
+      "currency_type": 1,
+      "delta": -5,
+      "annotation": null
+    },
+    {
+      "ability_id": 2824119765,
+      "currency_type": 1,
+      "delta": -2,
+      "annotation": null
+    },
+    {
+      "ability_id": 509856396,
+      "currency_type": 1,
+      "delta": -2,
+      "annotation": null
+    },
+    {
+      "ability_id": 509856396,
+      "currency_type": 1,
+      "delta": -5,
+      "annotation": null
+    },
+    {
+      "ability_id": 2824119765,
+      "currency_type": 1,
+      "delta": -5,
+      "annotation": null
+    },
+    {
+      "ability_id": 715762406,
+      "currency_type": 1,
+      "delta": -2,
+      "annotation": null
+    },
+    {
+      "ability_id": 715762406,
+      "currency_type": 1,
+      "delta": -5,
+      "annotation": null
+    }
+  ]
+}

@@ -38,6 +38,7 @@ export default function CharacterPanel({ draft, onChange }) {
                 ...draft,
                 heroId: e.target.value || null,
                 abilityRanks: {},
+                abilityOrder: [],
                 imbues: {},
               };
               next.imbues = Object.fromEntries(
@@ -48,6 +49,7 @@ export default function CharacterPanel({ draft, onChange }) {
               onChange({
                 heroId: next.heroId,
                 abilityRanks: {},
+                abilityOrder: [],
                 imbues: next.imbues,
               });
             }}

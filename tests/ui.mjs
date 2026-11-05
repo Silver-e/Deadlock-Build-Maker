@@ -31,18 +31,29 @@ assert.deepEqual(
   await page
     .locator(".category-top>input")
     .evaluateAll((es) => es.map((e) => e.value)),
-  ["Early Game", "Mid Game", "Late Game", "Optional"],
+  [
+    "Early Game",
+    "Optional Early",
+    "Mid Game",
+    "Optional Mid",
+    "Late Game",
+    "Optional Late",
+    "Counter items",
+  ],
 );
 assert.equal(
   await page
-    .getByRole("checkbox", { name: "Mark Optional as optional", exact: true })
+    .getByRole("checkbox", {
+      name: "Mark Optional Early as optional",
+      exact: true,
+    })
     .isChecked(),
   true,
 );
 await page
   .getByRole("checkbox", { name: "Mark Mid Game as optional", exact: true })
   .check();
-assert.equal(await page.locator(".optional-category").count(), 2);
+assert.equal(await page.locator(".optional-category").count(), 5);
 await page.getByRole("button", { name: "Undo", exact: true }).click();
 assert.equal(
   await page
@@ -78,7 +89,7 @@ await page
   })
   .click();
 await page.getByRole("button", { name: "Add category", exact: true }).click();
-await page.getByLabel("Category 5 name", { exact: true }).fill("Late game");
+await page.getByLabel("Category 8 name", { exact: true }).fill("Late game");
 await loadout();
 await page
   .getByRole("button", { name: "Unequip Extended Magazine", exact: true })
@@ -120,7 +131,7 @@ assert.equal(
   "Test draft",
 );
 assert.equal(
-  await page.getByLabel("Category 5 name", { exact: true }).inputValue(),
+  await page.getByLabel("Category 8 name", { exact: true }).inputValue(),
   "Late game",
 );
 async function equipItem(type, name) {
@@ -202,7 +213,7 @@ assert.equal(
   "Untitled build",
 );
 await page.getByRole("button", { name: /My drafts/ }).click();
-await page.getByRole("button", { name: /Test draft.*5 categories/ }).click();
+await page.getByRole("button", { name: /Test draft.*8 categories/ }).click();
 await loadout();
 await page.getByRole("button", { name: "Clear loadout", exact: true }).click();
 assert.match(

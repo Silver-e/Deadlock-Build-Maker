@@ -7,19 +7,24 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test tests/model.test.mjs tests/stats.test.mjs tests/heroes.test.mjs tests/combat.test.mjs",
+    "test": "node --test tests/model.test.mjs tests/stats.test.mjs tests/heroes.test.mjs tests/combat.test.mjs tests/export.test.mjs tests/ability-plan.test.mjs",
     "test:ui": "node tests/ui.mjs",
     "test:pages": "node tests/pages.mjs",
     "test:moves": "node tests/item-moves.mjs",
     "test:combat": "node tests/combat-ui.mjs",
     "sync:items": "node scripts/sync-items.mjs",
-    "sync:heroes": "node scripts/sync-heroes.mjs"
+    "sync:heroes": "node scripts/sync-heroes.mjs",
+    "test:export": "node tests/export-ui.mjs",
+    "test:abilities": "node tests/ability-plan-ui.mjs",
+    "sync:export": "node scripts/sync-game-export.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@hpcc-js/wasm-zstd": "^1.17.0",
+    "protobufjs": "^8.8.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

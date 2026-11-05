@@ -1,4 +1,5 @@
 import snapshot from "../data/items.json" with { type: "json" };
+import { validAbilityOrder } from "./abilityPlan.js";
 export const items = snapshot.items;
 export const byId = Object.fromEntries(items.map((i) => [i.id, i]));
 export const types = ["Weapon", "Spirit", "Vitality"];
@@ -68,18 +69,25 @@ export function makeDraft() {
     heroId: null,
     boons: 0,
     abilityRanks: {},
+    abilityOrder: [],
     imbues: {},
     previewAbility: "1",
-    categories: ["Early Game", "Mid Game", "Late Game", "Optional"].map(
-      (name) => ({
-        id: crypto.randomUUID(),
-        name,
-        description: "",
-        items: [],
-        wide: true,
-        optional: name === "Optional",
-      }),
-    ),
+    categories: [
+      ["Early Game", false],
+      ["Optional Early", true],
+      ["Mid Game", false],
+      ["Optional Mid", true],
+      ["Late Game", false],
+      ["Optional Late", true],
+      ["Counter items", true],
+    ].map(([name, optional]) => ({
+      id: crypto.randomUUID(),
+      name,
+      description: "",
+      items: [],
+      wide: true,
+      optional,
+    })),
     equipped: [],
     extra: 3,
   };
@@ -152,6 +160,7 @@ export function validDraft(d) {
                 Math.abs(source.value) <= 100000,
             ))))) &&
     (d.heroId == null || typeof d.heroId === "string") &&
+    (d.abilityOrder === undefined || validAbilityOrder(d.abilityOrder)) &&
     (d.boons === undefined ||
       (Number.isInteger(d.boons) && d.boons >= 0 && d.boons <= 35)) &&
     (d.previewAbility === undefined ||

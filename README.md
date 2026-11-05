@@ -1,6 +1,6 @@
 # Deadlock Build Maker (DBM)
 
-A local recreation of the Curiosity Shop and build editor. No accounts, Steam integration, public builds, sharing, or runtime API calls.
+A local recreation of the Curiosity Shop and build editor. No accounts, Steam integration, public build hosting, or runtime API calls.
 
 ## Run on Windows
 
@@ -54,7 +54,7 @@ Silver's **Lycan Curse active** preset additionally switches to her transformed 
 
 **Loadout & stats** shows character totals and expandable ability details above the existing item bonus breakdown. Damage is before enemy resistance. Temporary buffs, triggered procs, combat stacks, and enemy-dependent effects stay separate rather than being assumed active. Silver's transformed form is selectable separately; in-development characters are labeled Preview.
 
-New builds begin with **Early Game**, **Mid Game**, **Late Game**, and **Optional**. The last is marked optional by default. Each category has an **Optional category** checkbox; regular sections are warm tan and optional sections are blue-gray, with optional status also identified in the shop's destination selector. This flag is saved with the draft and supports Undo. Optional items can still be equipped and count normally in loadout stats. Existing drafts keep their categories, with legacy missing flags treated as off.
+New builds begin with **Early Game**, **Optional Early**, **Mid Game**, **Optional Mid**, **Late Game**, **Optional Late**, and **Counter items**, in that order. Optional Early, Optional Mid, Optional Late, and Counter items are marked optional by default. Each category has an **Optional category** checkbox; regular sections are warm tan and optional sections are blue-gray, with optional status also identified in the shop's destination selector. This flag is saved with the draft and supports Undo. Optional items can still be equipped and count normally in loadout stats. Existing drafts keep their categories, with legacy missing flags treated as off.
 
 The top tabs open separate full-width views: **Build**, **Weapon**, **Vitality**, **Spirit**, and **Loadout & stats**. On the build page, select a category and choose **Add items**. In the shop, the destination selector changes which category receives items; **Return to build** brings you back to the full editor. The investment bars and equipment occupy the loadout page rather than crowding the build.
 
@@ -106,3 +106,15 @@ Character math and asset completeness are also checked by `npm test`. Run `node 
 ## Attribution
 
 Item descriptions, statistics, relationships, and investment table: [Deadlock Wiki](https://deadlock.wiki/Items), adapted under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Each item record retains its source link. The bundled dataset and adaptations of that text are available under the same license. Game artwork and game typefaces belong to Valve and their respective owners; they are not covered by the text license. This is an unofficial fan tool, unaffiliated with Valve.
+
+## Copy builds into Deadlock
+
+The **Ability point order** map uses four ability rows and sixteen numbered steps. Choose a row in the next column to add its unlock or next upgrade. Upgrades cost 1, 2, and 5 AP. Choose another row in an earlier column to change it; fully assigned rows swap steps. **Undo step** removes the last entry and **Reset order** clears the plan. Both support the editor's Undo button. The grid scrolls sideways on narrow screens, keeping ability icons visible.
+
+Plans save per draft and export to the game's recommendation system through `ability_order.currency_changes`. Partial plans export their planned prefix. Changing characters clears the plan and Undo restores it. Old drafts start with an empty plan. Silver's transformed preview plans the normal Silver ability slots. Character-panel rank selectors remain separate stat preview controls. Run `npm run test:abilities` against the dev server to check editing, persistence, export, and mobile behavior.
+
+Select a character, draft your items, then click **Copy for Deadlock**. In the game, open **Create New Build**, click **Paste**, then save. If browser clipboard access is blocked, select the generated code and copy it manually. Export runs locally, including compression, and makes no network requests.
+
+Exports include the build name and description, ordered categories and items, category notes, optional flags, explicitly assigned imbue targets, and the planned ability unlock and upgrade sequence. Preview ability ranks, boons, equipped loadout, and combat preview settings stay local. Silver's transformed preview exports as Silver; assigned imbues targeting unmapped transformed abilities produce an error rather than an incorrect code. Export enforces the game schema's 16,000 byte limit before compression.
+
+The codec uses `base64(zstd(CMsgHeroBuild protobuf))`. The bundled schema comes from [SteamDatabase/Protobufs](https://github.com/SteamDatabase/Protobufs/blob/master/deadlock/citadel_gcmessages_common.proto), with numeric game IDs from [leamare/deadlock-metadata](https://github.com/leamare/deadlock-metadata). Run `npm run sync:export` after refreshing the item/hero snapshots to update the schema and mappings. Run `npm run test:export` with the development server running for clipboard and responsive UI checks. Codec tests decode with the source schema and Node?s native Zstandard implementation. Actual game paste compatibility still requires a manual check in Deadlock.

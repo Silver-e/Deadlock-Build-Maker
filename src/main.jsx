@@ -25,6 +25,8 @@ import CharacterStats from "./CharacterStats";
 import AbilityPreview from "./AbilityPreview";
 import { heroById, imbueTarget } from "./heroes";
 import useItemDrag from "./useItemDrag";
+import GameExport from "./GameExport";
+import AbilityOrder from "./AbilityOrder";
 const KEY = "deadlock-local-drafts-v1";
 const money = (n) => n.toLocaleString("en-US");
 function Icon({ name, size = 18 }) {
@@ -554,6 +556,7 @@ function App() {
                 </button>
               </div>
             </div>
+            <GameExport draft={draft} />
             <div className="build-meta">
               <input
                 className="build-name"
@@ -575,6 +578,12 @@ function App() {
                 }
               />
             </div>
+            <AbilityOrder
+              draft={draft}
+              onChange={(abilityOrder) =>
+                update((d) => ({ ...d, abilityOrder }))
+              }
+            />
             <div className="categories-header">
               <span>{allDraftIds.length} draft items</span>
               <button

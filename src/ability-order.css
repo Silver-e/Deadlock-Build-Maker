@@ -1,0 +1,161 @@
+/* CitadelAbilityOrder: cream icon rail, dark row bands and purple unlock pips. */
+.ability-plan {
+  max-width: 800px;
+  margin: 0 24px 24px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #20231d;
+}
+.ability-plan-heading,
+.ability-plan-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.ability-plan-heading {
+  margin-bottom: 12px;
+}
+.ability-plan-heading h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.ability-plan-heading > div {
+  display: flex;
+  gap: 8px;
+}
+.ability-plan-heading button {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+.ability-plan-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.ability-plan-grid {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  min-width: 704px;
+}
+.ability-plan-grid th,
+.ability-plan-grid td {
+  padding: 0;
+  text-align: center;
+}
+.ability-plan-grid thead th {
+  height: 24px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.ability-plan-grid th:first-child {
+  width: 48px;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.ability-plan-grid tbody th {
+  background: var(--cream);
+}
+.ability-plan-grid tbody th img {
+  width: 32px;
+  height: 32px;
+  display: block;
+  margin: 4px auto;
+  filter: brightness(0);
+}
+.ability-plan-grid tbody tr:nth-child(odd) {
+  background: #13170f;
+}
+.ability-plan-grid tbody tr:nth-child(even) {
+  background: #292e24;
+}
+.ability-plan-grid td {
+  height: 40px;
+}
+.ability-plan-grid td.next-step {
+  background: #343e2b;
+}
+.ability-plan-grid thead .next-step {
+  color: var(--cream);
+}
+.ability-plan-grid td button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 32px;
+  height: 32px;
+  min-height: 0;
+  padding: 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #c7ceb9;
+  font-size: 14px;
+  font-weight: 700;
+}
+.ability-plan-grid td button.assigned {
+  background: #20231d;
+  border-color: #464a3d;
+}
+.ability-plan-grid td button:hover:not(:disabled) {
+  background: #4b5140;
+  border-color: var(--cream);
+}
+.ability-plan-grid td button:disabled {
+  opacity: 0.25;
+}
+.ability-plan-grid td button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.ability-plan-pip {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: #c7ceb9;
+}
+.ability-plan-pip.unlock {
+  color: #b49bcc;
+}
+.ability-plan-grid .unlock-step {
+  border-color: #b49bcc;
+}
+.ability-plan-add {
+  color: #aeb1a0;
+  font-size: 18px;
+  font-weight: 400;
+}
+.ability-plan-footer {
+  margin-top: 12px;
+  align-items: baseline;
+}
+.ability-plan p,
+.ability-plan-footer > span {
+  color: #c7ceb9;
+  font-size: 12px;
+  line-height: 16px;
+}
+.ability-plan-footer p {
+  max-width: 65ch;
+}
+.ability-plan-footer > span {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.ability-plan-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+@media (max-width: 700px) {
+  .ability-plan {
+    margin: 0 16px 16px;
+    padding: 12px;
+  }
+}

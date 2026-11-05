@@ -1,0 +1,175 @@
+{
+  "nested": {
+    "CMsgHeroBuild": {
+      "edition": "proto2",
+      "fields": {
+        "heroBuildId": {
+          "type": "uint32",
+          "id": 1,
+          "protoName": "hero_build_id"
+        },
+        "heroId": {
+          "type": "uint32",
+          "id": 2,
+          "protoName": "hero_id"
+        },
+        "authorAccountId": {
+          "type": "uint32",
+          "id": 3,
+          "protoName": "author_account_id"
+        },
+        "lastUpdatedTimestamp": {
+          "type": "uint32",
+          "id": 4,
+          "protoName": "last_updated_timestamp"
+        },
+        "name": {
+          "type": "string",
+          "id": 5
+        },
+        "description": {
+          "type": "string",
+          "id": 6
+        },
+        "language": {
+          "type": "uint32",
+          "id": 7
+        },
+        "version": {
+          "type": "uint32",
+          "id": 8
+        },
+        "originBuildId": {
+          "type": "uint32",
+          "id": 9,
+          "protoName": "origin_build_id"
+        },
+        "details": {
+          "type": ".CMsgHeroBuild.Details_V0",
+          "id": 10
+        },
+        "tags": {
+          "rule": "repeated",
+          "type": "uint32",
+          "id": 11
+        },
+        "developmentBuild": {
+          "type": "bool",
+          "id": 12,
+          "protoName": "development_build"
+        },
+        "publishTimestamp": {
+          "type": "uint32",
+          "id": 13,
+          "protoName": "publish_timestamp"
+        }
+      },
+      "nested": {
+        "BuildModEntry": {
+          "fields": {
+            "abilityId": {
+              "type": "uint32",
+              "id": 1,
+              "protoName": "ability_id"
+            },
+            "annotation": {
+              "type": "string",
+              "id": 2
+            },
+            "requiredFlexSlots": {
+              "type": "uint32",
+              "id": 3,
+              "protoName": "required_flex_slots"
+            },
+            "sellPriority": {
+              "type": "uint32",
+              "id": 4,
+              "protoName": "sell_priority"
+            },
+            "imbueTargetAbilityId": {
+              "type": "uint32",
+              "id": 5,
+              "protoName": "imbue_target_ability_id"
+            }
+          }
+        },
+        "BuildModCategory": {
+          "fields": {
+            "mods": {
+              "rule": "repeated",
+              "type": ".CMsgHeroBuild.BuildModEntry",
+              "id": 1
+            },
+            "name": {
+              "type": "string",
+              "id": 2
+            },
+            "description": {
+              "type": "string",
+              "id": 3
+            },
+            "width": {
+              "type": "float",
+              "id": 4
+            },
+            "height": {
+              "type": "float",
+              "id": 5
+            },
+            "optional": {
+              "type": "bool",
+              "id": 6
+            }
+          }
+        },
+        "CurrencyChange": {
+          "fields": {
+            "abilityId": {
+              "type": "uint32",
+              "id": 1,
+              "protoName": "ability_id"
+            },
+            "currencyType": {
+              "type": "int32",
+              "id": 2,
+              "protoName": "currency_type"
+            },
+            "delta": {
+              "type": "int32",
+              "id": 3
+            },
+            "annotation": {
+              "type": "string",
+              "id": 4
+            }
+          }
+        },
+        "AbilityOrder": {
+          "fields": {
+            "currencyChanges": {
+              "rule": "repeated",
+              "type": ".CMsgHeroBuild.CurrencyChange",
+              "id": 1,
+              "protoName": "currency_changes"
+            }
+          }
+        },
+        "Details_V0": {
+          "fields": {
+            "modCategories": {
+              "rule": "repeated",
+              "type": ".CMsgHeroBuild.BuildModCategory",
+              "id": 1,
+              "protoName": "mod_categories"
+            },
+            "abilityOrder": {
+              "type": ".CMsgHeroBuild.AbilityOrder",
+              "id": 2,
+              "protoName": "ability_order"
+            }
+          }
+        }
+      }
+    }
+  }
+}

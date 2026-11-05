@@ -213,6 +213,10 @@ The fixed detail panel is 360px wide, constrained to the viewport. Its accent he
 
 ## Do's and Don'ts
 
+### Ability point order
+
+The build editor follows CitadelAbilityOrder's cream icon rail, four alternating dark rows, purple unlock arrows, and muted upgrade arrows with point costs. Sixteen numbered columns show the plan, with the next column highlighted in olive. On narrow screens the grid scrolls horizontally with sticky ability icons. Undo step and Reset order use small toolbar controls. Visual source: https://github.com/SteamDatabase/GameTracking-Deadlock/blob/master/game/citadel/pak01_dir/panorama/styles/citadel_ui_ability_order.css
+
 ### Do:
 - **Do** preserve the Weapon, Vitality, and Spirit category identities across tabs, artwork, details, and investment.
 - **Do** retain the bundled Retail and Occult fonts and documented game assets for offline rendering.

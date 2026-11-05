@@ -1,13 +1,13 @@
 # Deadlock build planner
 
 ## Platform
-Local web app, desktop first, with responsive fallback. No account, Steam connection, hosted services, public builds, or sharing.
+Local web app, desktop first, with responsive fallback. No account, Steam connection, hosted services, or public build hosting.
 
 ## Purpose
 Draft Deadlock builds outside the game. Browse the current shop, inspect item descriptions and stats, organize items into named categories, and save drafts on this computer.
 
 ## Confirmed behavior
-New drafts start with Early Game, Mid Game, Late Game, and Optional. Only the default Optional category is marked optional. Every category has a persisted, undoable optional toggle with a distinct visual treatment. Optional choices remain manually equippable and count normally in equipped stats. Existing drafts retain their category names, order, and content; missing legacy optional flags behave as false.
+New drafts start with Early Game, Optional Early, Mid Game, Optional Mid, Late Game, Optional Late, and Counter items, in that order. Optional Early, Optional Mid, Optional Late, and Counter items are marked optional by default. Every category has a persisted, undoable optional toggle with a distinct visual treatment. Optional choices remain manually equippable and count normally in equipped stats. Existing drafts retain their category names, order, and content; missing legacy optional flags behave as false.
 The three investment bars calculate from a separate equipped loadout, not every item in the draft. Component upgrades must replace their components, duplicates must not inflate investment, and removing an item must remove its investment. Drafts may include alternatives and more items than can be equipped.
 
 The editor, shop categories, and equipped loadout/stats occupy separate full-width pages, following the game's tab structure. The equipped stats page aggregates permanent item bonuses and investments, and identifies conditional, active, imbued, stacking, and target effects with their originating item icons. Conditions do not inflate permanent totals. All effect text and numeric parameters remain visible.
@@ -19,3 +19,6 @@ User explicitly requests the game's shop and build editor UI/UX: dense item cata
 
 ## Data
 Bundle a local snapshot of Deadlock Wiki item text, icons, and investment rules, with attribution and optional maintainer refresh script. Runtime must work offline after installation.
+
+## Game export
+Copy for Deadlock generates a native clipboard build locally. It preserves category names, notes, order, optional flags, item order, and explicit imbue targets, requires a character, and offers selectable code when clipboard access is blocked. Ability unlock and upgrade sequences save per draft and export as native currency changes. The four-row game-style map supports sixteen steps: one unlock and three upgrades costing 1/2/5 AP per ability. Existing drafts without a plan remain valid. Hero changes reset the plan and are undoable. Preview settings stay local. Schema and ID snapshots are bundled for offline use.
