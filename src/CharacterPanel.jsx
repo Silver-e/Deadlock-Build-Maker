@@ -51,7 +51,6 @@ export default function CharacterPanel({ draft, onChange }) {
             {heroes.map((h) => (
               <option key={h.id} value={h.id}>
                 {h.name}
-                {h.preview ? " (Preview)" : ""}
               </option>
             ))}
           </select>
