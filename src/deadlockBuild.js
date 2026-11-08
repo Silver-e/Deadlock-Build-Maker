@@ -2,11 +2,96 @@ import protobuf from "protobufjs";
 import schema from "../data/hero-build-schema.json" with { type: "json" };
 import ids from "../data/game-ids.json" with { type: "json" };
 import { heroById } from "./heroes.js";
-import { byId, validDraft } from "./model.js";
-import { abilityPlanSteps } from "./abilityPlan.js";
+import { byId, validDraft, makeDraft } from "./model.js";
+import { abilityPlanSteps, validAbilityOrder } from "./abilityPlan.js";
 
 const Build = protobuf.Root.fromJSON(schema).lookupType("CMsgHeroBuild");
 export const MAX_BUILD_BYTES = 16000;
+
+export function decodeGameBuild(bytes) {
+  if (!bytes.length || bytes.length > MAX_BUILD_BYTES)
+    throw Error("Build data must be between 1 byte and 16 KB.");
+  let build;
+  try {
+    build = Build.decode(bytes);
+  } catch {
+    throw Error("This is not valid Deadlock build data.");
+  }
+  const heroId = Object.keys(ids.heroes).find(
+    (id) =>
+      ids.heroes[id] === build.heroId && id !== "hero_werewolf_transformed",
+  );
+  if (!heroById[heroId] || !build.details || build.version !== 0)
+    throw Error("This build uses an unsupported hero or build format.");
+  const draft = makeDraft();
+  draft.heroId = heroId;
+  draft.name = build.name || "Imported build";
+  draft.description = build.description || "";
+  const itemIds = new Map(
+    Object.entries(ids.items).map(([id, value]) => [value, id]),
+  );
+  const slots = new Map(
+    heroById[heroId].abilities.map((a) => [ids.abilities[a.id], a.slot]),
+  );
+  const seen = new Set();
+  const categories = build.details.modCategories.map((category) => ({
+    id: crypto.randomUUID(),
+    name: category.name || "Items",
+    description: category.description || "",
+    optional: !!category.optional,
+    wide: true,
+    items: category.mods.flatMap((mod) => {
+      const id = itemIds.get(mod.abilityId);
+      if (!byId[id])
+        throw Error(
+          `This build contains an unsupported item (${mod.abilityId}). Update the catalog before importing it.`,
+        );
+      if (mod.imbueTargetAbilityId) {
+        const slot = slots.get(mod.imbueTargetAbilityId);
+        if (!slot || !byId[id].imbue)
+          throw Error("This build contains an unsupported imbue target.");
+        draft.imbues[id] = slot;
+      }
+      if (seen.has(id)) return [];
+      seen.add(id);
+      return [id];
+    }),
+  }));
+  if (categories.length) draft.categories = categories;
+  draft.abilityOrder = (build.details.abilityOrder?.currencyChanges || [])
+    .filter((step) => step.delta < 0)
+    .map((step) => {
+      const slot = slots.get(step.abilityId);
+      if (!slot)
+        throw Error("This build contains an unsupported ability order.");
+      return slot;
+    });
+  if (!validAbilityOrder(draft.abilityOrder) || !validDraft(draft))
+    throw Error(
+      "This build contains an unsupported ability order or draft data.",
+    );
+  return draft;
+}
+
+export async function importGameBuild(text) {
+  const code = text.trim().replace(/\s/g, "");
+  if (!code || code.length > 24000 || !/^[A-Za-z0-9+/]+={0,2}$/.test(code))
+    throw Error(
+      "Paste the build code copied from Deadlock, not a build ID or link.",
+    );
+  let bytes;
+  try {
+    const compressed = Uint8Array.from(atob(code), (c) => c.charCodeAt(0));
+    const { Zstd } = await import("@hpcc-js/wasm-zstd");
+    const zstd = await Zstd.load();
+    bytes = zstd.decompress(compressed);
+  } catch {
+    throw Error(
+      "Could not read this Deadlock build code. Copy the build again and paste the complete code.",
+    );
+  }
+  return decodeGameBuild(bytes);
+}
 
 export function encodeGameBuild(draft, now = Date.now()) {
   if (!validDraft(draft))

@@ -26,7 +26,7 @@ try {
   );
   assert.equal(
     await page
-      .locator(".header-actions .game-export + button")
+      .getByRole("button", { name: /My drafts/ })
       .innerText()
       .then((text) => text.trim().startsWith("My drafts")),
     true,
@@ -113,6 +113,40 @@ try {
   });
   await page.getByLabel("Build name", { exact: true }).fill("Changed build");
   assert.equal(await code.count(), 0);
+  const importedCode = await page.evaluate(() => window.copiedBuild);
+  await page
+    .getByRole("button", { name: "Import from Deadlock", exact: true })
+    .click();
+  const input = page.getByRole("textbox", {
+    name: "Game build code",
+    exact: true,
+  });
+  await input.fill("invalid");
+  await page.getByRole("button", { name: "Import as new draft" }).click();
+  await page.getByRole("alert").waitFor();
+  assert.equal(
+    await page.getByLabel("Build name", { exact: true }).inputValue(),
+    "Changed build",
+  );
+  await input.fill(importedCode);
+  await page.getByRole("button", { name: "Import as new draft" }).click();
+  await page
+    .getByRole("form", { name: "Import from Deadlock" })
+    .waitFor({ state: "hidden" });
+  assert.equal(
+    await page.getByLabel("Build character", { exact: true }).inputValue(),
+    "hero_atlas",
+  );
+  await page.reload();
+  await page.getByRole("button", { name: /My drafts/ }).click();
+  assert.equal(await page.locator(".draft-row").count(), 2);
+  assert.equal(
+    await page
+      .locator(".draft-row")
+      .filter({ hasText: "Changed build" })
+      .count(),
+    1,
+  );
   assert.deepEqual(errors, []);
   assert.deepEqual(external, []);
   console.log(

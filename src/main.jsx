@@ -28,6 +28,7 @@ import AbilityPreview from "./AbilityPreview";
 import { heroById, imbueTarget } from "./heroes";
 import useItemDrag from "./useItemDrag";
 import GameExport from "./GameExport";
+import GameImport from "./GameImport";
 import AbilityOrder from "./AbilityOrder";
 import AbilityDetails from "./AbilityDetails";
 const KEY = "deadlock-local-drafts-v1";
@@ -255,10 +256,9 @@ function App() {
     [cs[i], cs[i + delta]] = [cs[i + delta], cs[i]];
     update((d) => ({ ...d, categories: cs }));
   }
-  function newDraft() {
+  function newDraft(d = makeDraft()) {
     setView("build");
     setDetail(null);
-    const d = makeDraft();
     dirty.current = true;
     setDrafts((ds) => [...ds, d]);
     setCurrent(d.id);
@@ -442,7 +442,8 @@ function App() {
             <Icon name="folder" />
             My drafts <span className="count">{drafts.length}</span>
           </button>
-          <button className="cream-button" onClick={newDraft}>
+          <GameImport onImport={newDraft} />
+          <button className="cream-button" onClick={() => newDraft()}>
             <Icon name="plus" />
             New build
           </button>

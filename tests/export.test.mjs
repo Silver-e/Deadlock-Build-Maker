@@ -76,3 +76,60 @@ test("export requires a hero and enforces the game payload limit", () => {
   d.description = "x".repeat(16001);
   assert.throws(() => encodeGameBuild(d), /16 KB/);
 });
+
+// Native compression and the source proto exercise the game-facing import boundary.
+test("imports game clipboard builds as independent drafts", async () => {
+  const { zstdCompressSync } = await import("node:zlib");
+  const { importGameBuild } = await import("../src/deadlockBuild.js");
+  const source = makeDraft();
+  source.heroId = "hero_inferno";
+  source.name = "Imported notes";
+  source.description = "Build description";
+  const item = items.find((i) => i.imbue);
+  source.categories[0].items = [item.id];
+  source.categories[0].description = "Buy first";
+  source.imbues[item.id] = "1";
+  source.abilityOrder = ["1", "2", "1", "3", "4"];
+  const code = zstdCompressSync(encodeGameBuild(source)).toString("base64");
+  const draft = await importGameBuild(`  ${code}\n`);
+  assert.notEqual(draft.id, source.id);
+  assert.equal(draft.heroId, source.heroId);
+  assert.equal(draft.name, source.name);
+  assert.equal(draft.description, source.description);
+  assert.deepEqual(draft.abilityOrder, source.abilityOrder);
+  assert.deepEqual(draft.imbues, source.imbues);
+  assert.deepEqual(draft.equipped, []);
+  assert.deepEqual(
+    draft.categories.map(({ id, ...c }) => c),
+    source.categories.map(({ id, ...c }) => c),
+  );
+});
+
+test("import rejects invalid, unsupported and oversized builds", async () => {
+  const { decodeGameBuild, importGameBuild } =
+    await import("../src/deadlockBuild.js");
+  for (const code of [
+    "",
+    "1234",
+    "https://example.com/build/1",
+    "A".repeat(24001),
+  ])
+    await assert.rejects(importGameBuild(code));
+  assert.throws(() => decodeGameBuild(new Uint8Array(16001)), /16 KB/);
+  assert.throws(() => decodeGameBuild(Uint8Array.of(255)), /not valid/);
+  const encode = (build) => Build.encode(Build.create(build)).finish();
+  assert.throws(
+    () => decodeGameBuild(encode({ heroId: 9999, details: {} })),
+    /unsupported hero/,
+  );
+  assert.throws(
+    () =>
+      decodeGameBuild(
+        encode({
+          heroId: 6,
+          details: { modCategories: [{ mods: [{ abilityId: 1 }] }] },
+        }),
+      ),
+    /unsupported item/,
+  );
+});
