@@ -98,6 +98,7 @@ test("new drafts use seven ordered categories with optional choices flagged", ()
         "Dispel Magic",
         "Spirit Resilience",
         "Bullet Resilience",
+        "Stamina Mastery",
       ],
       [],
       [],

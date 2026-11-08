@@ -75,6 +75,7 @@ const starterItems = {
     "upgrade_reduce_debuff_duration",
     "upgrade_tech_purge",
     "upgrade_improved_bullet_armor",
+    "upgrade_superior_stamina",
   ],
   "Counter items": [
     "upgrade_withering_whip",
