@@ -10,19 +10,29 @@ export const MAX_BUILD_BYTES = 16000;
 
 export function decodeGameBuild(bytes) {
   if (!bytes.length || bytes.length > MAX_BUILD_BYTES)
-    throw Error("Build data must be between 1 byte and 16 KB.");
+    throw Error(
+      "Build data must be between 1 byte and 16 KB. Shorten the notes or remove categories in Deadlock, then copy again.",
+    );
   let build;
   try {
     build = Build.decode(bytes);
   } catch {
-    throw Error("This is not valid Deadlock build data.");
+    throw Error(
+      "This is not valid Deadlock build data. Copy the build again in Deadlock and paste the complete code.",
+    );
   }
   const heroId = Object.keys(ids.heroes).find(
     (id) =>
       ids.heroes[id] === build.heroId && id !== "hero_werewolf_transformed",
   );
-  if (!heroById[heroId] || !build.details || build.version !== 0)
-    throw Error("This build uses an unsupported hero or build format.");
+  if (!heroById[heroId])
+    throw Error(
+      `This build uses an unsupported hero (game ID ${build.heroId}). Try a supported character, or report this ID so DBM can add support.`,
+    );
+  if (!build.details || build.version !== 0)
+    throw Error(
+      `This build uses an unsupported build format (version ${build.version}). Copy it again from the current game. If it still fails, report this version so DBM can be updated.`,
+    );
   const draft = makeDraft();
   draft.heroId = heroId;
   draft.name = build.name || "Imported build";
@@ -44,12 +54,14 @@ export function decodeGameBuild(bytes) {
       const id = itemIds.get(mod.abilityId);
       if (!byId[id])
         throw Error(
-          `This build contains an unsupported item (${mod.abilityId}). Update the catalog before importing it.`,
+          `This build contains an unsupported item (${mod.abilityId}). Remove or replace it in Deadlock and copy again, or report this ID so DBM can update its catalog.`,
         );
       if (mod.imbueTargetAbilityId) {
         const slot = slots.get(mod.imbueTargetAbilityId);
         if (!slot || !byId[id].imbue)
-          throw Error("This build contains an unsupported imbue target.");
+          throw Error(
+            "This build contains an unsupported imbue target. Clear or reassign the imbue in Deadlock, then copy again.",
+          );
         draft.imbues[id] = slot;
       }
       if (seen.has(id)) return [];
@@ -63,12 +75,14 @@ export function decodeGameBuild(bytes) {
     .map((step) => {
       const slot = slots.get(step.abilityId);
       if (!slot)
-        throw Error("This build contains an unsupported ability order.");
+        throw Error(
+          "This build contains an unsupported ability order. Reset the ability order in Deadlock, then copy again.",
+        );
       return slot;
     });
   if (!validAbilityOrder(draft.abilityOrder) || !validDraft(draft))
     throw Error(
-      "This build contains an unsupported ability order or draft data.",
+      "This build contains an unsupported ability order or draft data. Reset the ability order in Deadlock and copy again. If it still fails, report the build to DBM.",
     );
   return draft;
 }
