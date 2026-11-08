@@ -33,7 +33,7 @@ export function decodeGameBuild(bytes) {
     throw Error(
       `This build uses an unsupported build format (version ${build.version}). Copy it again from the current game. If it still fails, report this version so DBM can be updated.`,
     );
-  const draft = makeDraft();
+  const draft = makeDraft({ starterItems: false });
   draft.heroId = heroId;
   draft.name = build.name || "Imported build";
   draft.description = build.description || "";

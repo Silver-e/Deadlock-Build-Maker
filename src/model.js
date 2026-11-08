@@ -61,7 +61,35 @@ export function equip(ids, id, extra = 3) {
     };
   return { ids: [...next, id] };
 }
-export function makeDraft() {
+const starterItems = {
+  "Optional Early": [
+    "upgrade_endurance",
+    "upgrade_melee_rebuttal",
+    "upgrade_grit",
+    "upgrade_vex_barrier",
+    "upgrade_spirit_bubble",
+    "upgrade_weapon_shielding",
+  ],
+  "Optional Mid": [
+    "upgrade_counterspell",
+    "upgrade_reduce_debuff_duration",
+    "upgrade_tech_purge",
+    "upgrade_improved_bullet_armor",
+  ],
+  "Counter items": [
+    "upgrade_withering_whip",
+    "upgrade_containment",
+    "upgrade_magic_slow",
+    "upgrade_suppressor",
+    "upgrade_greater_withering_whip",
+    "upgrade_rupture",
+    "upgrade_targeted_silence",
+    "upgrade_target_stun",
+    "upgrade_glitch",
+  ],
+};
+
+export function makeDraft({ starterItems: populate = true } = {}) {
   return {
     id: crypto.randomUUID(),
     name: "Untitled build",
@@ -84,7 +112,7 @@ export function makeDraft() {
       id: crypto.randomUUID(),
       name,
       description: "",
-      items: [],
+      items: populate ? [...(starterItems[name] || [])] : [],
       wide: true,
       optional,
     })),

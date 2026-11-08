@@ -15,7 +15,7 @@ import {
   uniqueDraftItems,
 } from "../src/model.js";
 test("moving draft items enforces one category without changing equipment", () => {
-  const d = makeDraft();
+  const d = makeDraft({ starterItems: false });
   const [a, b, c] = items.slice(0, 3).map((item) => item.id);
   d.categories[0].items = [a, b];
   d.categories[1].items = [c];
@@ -38,7 +38,7 @@ test("moving draft items enforces one category without changing equipment", () =
   assert.equal(moveDraftItem(d, a, "unknown"), d);
 });
 test("reordering uses the original drop index and dropping on itself does nothing", () => {
-  const d = makeDraft();
+  const d = makeDraft({ starterItems: false });
   const ids = items.slice(0, 4).map((item) => item.id);
   d.categories[0].items = ids;
   const target = d.categories[0].id;
@@ -57,7 +57,7 @@ test("reordering uses the original drop index and dropping on itself does nothin
   assert.deepEqual(moveDraftItem(d, ids[1], target, 1), d);
 });
 test("legacy duplicate cleanup keeps the first occurrence and all draft settings", () => {
-  const d = makeDraft();
+  const d = makeDraft({ starterItems: false });
   const [a, b] = items.slice(0, 2).map((item) => item.id);
   d.categories[0].items = [a, a];
   d.categories[1].items = [a, b];
@@ -80,6 +80,44 @@ test("legacy duplicate cleanup keeps the first occurrence and all draft settings
 });
 test("new drafts use seven ordered categories with optional choices flagged", () => {
   const d = makeDraft();
+  assert.deepEqual(
+    d.categories.map((c) => c.items.map((id) => byId[id].name)),
+    [
+      [],
+      [
+        "Extra Regen",
+        "Rebuttal",
+        "Grit",
+        "Reactive Barrier",
+        "Spirit Shielding",
+        "Weapon Shielding",
+      ],
+      [],
+      [
+        "Counterspell",
+        "Dispel Magic",
+        "Spirit Resilience",
+        "Bullet Resilience",
+      ],
+      [],
+      [],
+      [
+        "Rusted Barrel",
+        "Slowing Hex",
+        "Mystic Slow",
+        "Suppressor",
+        "Disarming Hex",
+        "Decay",
+        "Silence Wave",
+        "Knockdown",
+        "Cursed Relic",
+      ],
+    ],
+  );
+  assert.deepEqual(d.equipped, []);
+  const another = makeDraft();
+  d.categories[1].items.pop();
+  assert.equal(another.categories[1].items.length, 6);
   assert.deepEqual(
     d.categories.map((c) => c.name),
     [

@@ -17,7 +17,7 @@ try {
   page.setDefaultTimeout(5000);
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  const draft = makeDraft();
+  const draft = makeDraft({ starterItems: false });
   const [a, b, c] = items.filter((item) => item.type === "Weapon").slice(0, 3);
   draft.categories[0].items = [a.id, b.id];
   draft.categories[1].items = [c.id];

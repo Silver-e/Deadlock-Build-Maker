@@ -133,3 +133,13 @@ test("import rejects invalid, unsupported and oversized builds", async () => {
     /unsupported item/,
   );
 });
+
+test("importing an empty game build does not add new-draft starter items", async () => {
+  const { decodeGameBuild } = await import("../src/deadlockBuild.js");
+  const bytes = Build.encode(Build.create({ heroId: 6, details: {} })).finish();
+  const draft = decodeGameBuild(bytes);
+  assert.deepEqual(
+    draft.categories.flatMap((category) => category.items),
+    [],
+  );
+});
