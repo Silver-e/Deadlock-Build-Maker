@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test tests/model.test.mjs tests/stats.test.mjs tests/heroes.test.mjs tests/combat.test.mjs tests/export.test.mjs tests/ability-plan.test.mjs",
+    "test": "node --test tests/model.test.mjs tests/stats.test.mjs tests/heroes.test.mjs tests/combat.test.mjs tests/export.test.mjs tests/ability-plan.test.mjs tests/recommendations.test.mjs",
     "test:ui": "node tests/ui.mjs",
     "test:pages": "node tests/pages.mjs",
     "test:moves": "node tests/item-moves.mjs",
@@ -16,7 +16,9 @@
     "sync:heroes": "node scripts/sync-heroes.mjs",
     "test:export": "node tests/export-ui.mjs",
     "test:abilities": "node tests/ability-plan-ui.mjs",
-    "sync:export": "node scripts/sync-game-export.mjs"
+    "sync:export": "node scripts/sync-game-export.mjs",
+    "sync:recommendations": "node scripts/sync-recommendations.mjs",
+    "test:recommendations": "node tests/recommendations-ui.mjs"
   },
   "keywords": [],
   "author": "",

@@ -29,6 +29,8 @@ import { heroById, imbueTarget } from "./heroes";
 import useItemDrag from "./useItemDrag";
 import GameExport from "./GameExport";
 import GameImport from "./GameImport";
+import Recommendations from "./Recommendations.jsx";
+import { addRecommendations } from "./recommendations.js";
 import AbilityOrder from "./AbilityOrder";
 import AbilityDetails from "./AbilityDetails";
 const KEY = "deadlock-local-drafts-v1";
@@ -546,6 +548,16 @@ function App() {
         <CharacterPanel
           draft={draft}
           onChange={(fields) => update((d) => ({ ...d, ...fields }))}
+        />
+        <Recommendations
+          key={`${draft.id}-${draft.heroId}`}
+          draft={draft}
+          onItems={(profile, id) =>
+            update((d) => addRecommendations(d, profile, id))
+          }
+          onOrder={(order) =>
+            update((d) => ({ ...d, abilityOrder: [...order] }))
+          }
         />
         <div className="workspace">
           <section

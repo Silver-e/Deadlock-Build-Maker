@@ -1,0 +1,281 @@
+[
+  {
+    "heroId": "hero_warden",
+    "id": "spirit-guide",
+    "name": "Spirit · Last Stand",
+    "description": "Build around Last Stand damage, duration and staying close to enemies. A distinct alternative to the gun-oriented match profile; this guide is older, so compare its items with current matches.",
+    "sourceUpdated": "2026-01-15",
+    "sources": [
+      {
+        "title": "Hydration · Spirit Warden",
+        "url": "https://mobalytics.gg/deadlock/builds/spirit-warden-hydration"
+      }
+    ],
+    "stages": [
+      {
+        "name": "Early Game",
+        "items": [
+          "Monster Rounds",
+          "Extra Regen",
+          "Quicksilver Reload",
+          "Cold Front",
+          "Extra Stamina",
+          "Extra Spirit"
+        ]
+      },
+      {
+        "name": "Mid Game",
+        "items": [
+          "Majestic Leap",
+          "Surge of Power",
+          "Enchanter's Emblem",
+          "Healbane",
+          "Superior Cooldown",
+          "Superior Duration"
+        ]
+      },
+      {
+        "name": "Late Game",
+        "items": [
+          "Boundless Spirit",
+          "Diviner's Kevlar",
+          "Infuser",
+          "Spirit Burn"
+        ]
+      }
+    ],
+    "abilityOrder": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "1",
+      "1",
+      "2",
+      "4",
+      "4",
+      "4",
+      "2",
+      "2",
+      "1",
+      "3",
+      "3",
+      "3"
+    ]
+  },
+  {
+    "heroId": "hero_tengu",
+    "id": "spirit-guide",
+    "name": "Spirit · Thorns carry",
+    "description": "Farm through Entangling Thorns, then combine area damage with control. Compared with support Ivy, this path spends more on damage and exposure.",
+    "sourceUpdated": "2026-10-13",
+    "sources": [
+      {
+        "title": "Hydration · Spirit Carry Ivy",
+        "url": "https://mobalytics.gg/deadlock/builds/hydration-spirit-carry-ivy"
+      }
+    ],
+    "stages": [
+      {
+        "name": "Early Game",
+        "items": [
+          "Monster Rounds",
+          "Extended Magazine",
+          "Extra Charge",
+          "Extra Spirit",
+          "Mystic Expansion",
+          "Mystic Vulnerability"
+        ]
+      },
+      {
+        "name": "Mid Game",
+        "items": [
+          "Boundless Spirit",
+          "Escalating Exposure",
+          "Greater Expansion",
+          "Vortex Web",
+          "Lightning Scroll",
+          "Echo Shard"
+        ]
+      },
+      {
+        "name": "Late Game",
+        "items": [
+          "Refresher",
+          "Superior Duration",
+          "Transcendent Cooldown"
+        ]
+      }
+    ],
+    "abilityOrder": []
+  },
+  {
+    "heroId": "hero_tengu",
+    "id": "support-guide",
+    "name": "Support · Healing and control",
+    "description": "Prioritize team healing and crowd control instead of a personal damage carry path. The older guide uses some retired names; only exact current-catalog matches are offered.",
+    "sourceUpdated": "2026-01-15",
+    "sources": [
+      {
+        "title": "Suzu · Support Ivy",
+        "url": "https://mobalytics.gg/deadlock/builds/ivy"
+      }
+    ],
+    "stages": [
+      {
+        "name": "Early Game",
+        "items": [
+          "Extra Regen",
+          "Extra Charge",
+          "Extended Magazine",
+          "Mystic Expansion",
+          "Extra Stamina"
+        ]
+      },
+      {
+        "name": "Mid Game",
+        "items": [
+          "Healing Booster",
+          "Enchanter's Emblem",
+          "Slowing Hex",
+          "Rescue Beam"
+        ]
+      },
+      {
+        "name": "Late Game",
+        "items": [
+          "Healing Tempo",
+          "Alchemical Fire",
+          "Vortex Web",
+          "Greater Expansion"
+        ]
+      }
+    ],
+    "abilityOrder": [
+      "1",
+      "3",
+      "2",
+      "4",
+      "1",
+      "3",
+      "2",
+      "2",
+      "1",
+      "4",
+      "4",
+      "3",
+      "4",
+      "2",
+      "1",
+      "3"
+    ]
+  },
+  {
+    "heroId": "hero_ghost",
+    "id": "weapon-community",
+    "name": "Weapon · Hybrid lane into gun",
+    "description": "Community alternative: use spirit purchases for lane pressure, then invest in gun damage and sustain. This is an older discussion, not a consensus ranking; compare with the default and current purchases.",
+    "sourceUpdated": null,
+    "sources": [
+      {
+        "title": "Reddit · Geist build discussion",
+        "url": "https://www.reddit.com/r/DeadlockTheGame/comments/1rfp4d8/whats_the_proper_way_to_build_geist/"
+      }
+    ],
+    "stages": [
+      {
+        "name": "Early Game",
+        "items": [
+          "Radiant Regeneration",
+          "Mystic Expansion",
+          "Mystic Burst"
+        ]
+      },
+      {
+        "name": "Mid Game",
+        "items": [
+          "Kinetic Dash",
+          "Ballistic Enchantment",
+          "Berserker",
+          "Spirit Resilience"
+        ]
+      },
+      {
+        "name": "Late Game",
+        "items": [
+          "Spellslinger",
+          "Leech"
+        ]
+      }
+    ],
+    "abilityOrder": []
+  },
+  {
+    "heroId": "hero_tengu",
+    "id": "weapon-guide",
+    "name": "Weapon · Farming carry (older guide)",
+    "sourceUpdated": "2025-10-02",
+    "description": "A historical gun-carry alternative to Thorns and support Ivy. This shortlist emphasizes farming into weapon damage; compare the old guide with current observed purchases before using it.",
+    "sources": [
+      {
+        "title": "Y4mz · Gun Ivy",
+        "url": "https://mobalytics.gg/deadlock/builds/gun-ivy-y4mz"
+      }
+    ],
+    "stages": [
+      {
+        "name": "Early Game",
+        "items": [
+          "Monster Rounds",
+          "Extended Magazine",
+          "Extra Charge"
+        ]
+      },
+      {
+        "name": "Core options",
+        "items": [
+          "Battle Vest",
+          "Cultist Sacrifice",
+          "Intensifying Magazine",
+          "Tesla Bullets",
+          "Bullet Resist Shredder",
+          "Fleetfoot",
+          "Titanic Magazine",
+          "Burst Fire"
+        ]
+      },
+      {
+        "name": "Late Game",
+        "items": [
+          "Capacitor",
+          "Frenzy",
+          "Siphon Bullets"
+        ]
+      }
+    ],
+    "abilityOrder": []
+  },
+  {
+    "heroId": "hero_bebop",
+    "id": "bomb-guide",
+    "name": "Spirit · Echo bomb combo",
+    "sourceUpdated": "2026-10-13",
+    "description": "A combo shortlist from Suzu: Echo Shard lets you attach a second Sticky Bomb. Rushing it is risky when behind on bomb stacks. Trophy Collector supports roaming. Compare the full source and observed purchases for the rest of the build.",
+    "sources": [
+      {
+        "title": "Suzu · Bomb Bebop",
+        "url": "https://mobalytics.gg/deadlock/builds/suzu-bomb-bebop"
+      }
+    ],
+    "stages": [
+      {
+        "name": "Combo core",
+        "items": [
+          "Echo Shard",
+          "Trophy Collector"
+        ]
+      }
+    ],
+    "abilityOrder": []
+  }
+]

@@ -60,6 +60,8 @@ New builds begin with **Early Game**, **Optional Early**, **Mid Game**, **Option
 
 New drafts prefill Optional Early with Extra Regen, Rebuttal, Grit, Reactive Barrier, Spirit Shielding, and Weapon Shielding; Optional Mid with Counterspell, Dispel Magic, Spirit Resilience, and Bullet Resilience; and Counter items with Rusted Barrel, Slowing Hex, Mystic Slow, Suppressor, Disarming Hex, Decay, Silence Wave, Knockdown, Cursed Relic, and Focus Lens. These are draft recommendations, with the equipped loadout starting empty. Existing drafts and imported game builds do not receive these defaults.
 
+**Recommend items & abilities** below character setup opens sourced profiles for the selected hero. Compare observed purchases with the game default, or choose a named weapon, spirit, support, or combo shortlist where researched. Add missing items individually or together; apply a verified ability plan separately. Both support Undo. Sources and research dates are shown, and older guide profiles are labeled. See [research and maintenance notes](RECOMMENDATIONS.md) for coverage and limitations.
+
 The top tabs open separate full-width views: **Build**, **Weapon**, **Vitality**, **Spirit**, and **Loadout & stats**. On the build page, select a category and choose **Add items**. In the shop, the destination selector changes which category receives items; **Return to build** brings you back to the full editor. The investment bars and equipment occupy the loadout page rather than crowding the build.
 
 - Click a category to choose where shop items go. Click a shop item to add or remove it from that category. If it already belongs to another category, the shop labels the action **Move from … to …** and moves the existing item.
