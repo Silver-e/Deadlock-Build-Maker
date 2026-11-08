@@ -438,11 +438,11 @@ function App() {
             {saved ? "Saved on this computer" : "Not saved"}
           </span>
           <GameExport draft={draft} />
+          <GameImport onImport={newDraft} />
           <button onClick={() => setLibrary(!library)} aria-expanded={library}>
             <Icon name="folder" />
             My drafts <span className="count">{drafts.length}</span>
           </button>
-          <GameImport onImport={newDraft} />
           <button className="cream-button" onClick={() => newDraft()}>
             <Icon name="plus" />
             New build
