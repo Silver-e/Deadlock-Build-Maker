@@ -1,3 +1,4 @@
+import { selectCharacter, characterName } from "./character-picker-helper.mjs";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import { createServer } from "vite";
@@ -105,9 +106,7 @@ try {
   assert.match(await resist.innerText(), /^47\.21%/);
 
   // A different character uses the same controls, source pipeline and formula.
-  await page
-    .getByLabel("Build character", { exact: true })
-    .selectOption("hero_warden");
+  await selectCharacter(page, "hero_warden");
   await page
     .getByRole("button", { name: "Reset combat effects", exact: true })
     .click();

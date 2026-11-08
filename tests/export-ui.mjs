@@ -1,3 +1,4 @@
+import { selectCharacter, characterName } from "./character-picker-helper.mjs";
 import { chromium } from "playwright";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
@@ -58,9 +59,7 @@ try {
     .getByRole("status")
     .filter({ hasText: "Select a supported build character" })
     .waitFor();
-  await page
-    .getByLabel("Build character", { exact: true })
-    .selectOption("hero_atlas");
+  await selectCharacter(page, "hero_atlas");
   await page.evaluate(() =>
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
@@ -135,7 +134,7 @@ try {
     .waitFor({ state: "hidden" });
   assert.equal(
     await page.getByLabel("Build character", { exact: true }).inputValue(),
-    "hero_atlas",
+    characterName("hero_atlas"),
   );
   await page.reload();
   await page.getByRole("button", { name: /My drafts/ }).click();

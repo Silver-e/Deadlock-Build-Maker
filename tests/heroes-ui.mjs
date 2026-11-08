@@ -1,3 +1,4 @@
+import { selectCharacter, characterName } from "./character-picker-helper.mjs";
 import { chromium } from "playwright";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
@@ -16,9 +17,7 @@ await page.route("**/*", async (route) => {
 });
 await page.goto("http://127.0.0.1:5173");
 await page.getByLabel("Build name", { exact: true }).fill("Afterburn draft");
-await page
-  .getByLabel("Build character", { exact: true })
-  .selectOption("hero_inferno");
+await selectCharacter(page, "hero_inferno");
 await page
   .getByLabel("Item preview imbue target", { exact: true })
   .selectOption("3");
@@ -100,7 +99,7 @@ await page.getByRole("button", { name: "Close drafts" }).click();
 await page.reload();
 assert.equal(
   await page.getByLabel("Build character").inputValue(),
-  "hero_inferno",
+  characterName("hero_inferno"),
 );
 assert.equal(await page.getByLabel("Character boon level").inputValue(), "10");
 await page
@@ -114,7 +113,7 @@ assert.equal(
 );
 await page.getByRole("button", { name: "New build", exact: true }).click();
 assert.equal(await page.getByLabel("Build character").inputValue(), "");
-await page.getByLabel("Build character").selectOption("hero_chrono");
+await selectCharacter(page, "hero_chrono");
 await page.getByRole("button", { name: /My drafts/ }).click();
 assert.equal(
   await page.getByRole("img", { name: "Paradox", exact: true }).count(),
@@ -131,7 +130,7 @@ await page
   .click();
 assert.equal(
   await page.getByLabel("Build character").inputValue(),
-  "hero_inferno",
+  characterName("hero_inferno"),
 );
 await page.setViewportSize({ width: 390, height: 844 });
 await page

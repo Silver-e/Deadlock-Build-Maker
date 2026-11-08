@@ -1,0 +1,31 @@
+.character-picker {
+  position: relative;
+  min-width: 0;
+}
+.character-picker > label {
+  margin-bottom: 6px;
+}
+.character-picker .stat-picker-field {
+  min-width: 0;
+  padding: 0 0 0 12px;
+  gap: 8px;
+}
+.character-picker input {
+  width: 100%;
+  min-width: 0;
+  font-size: 14px;
+}
+.character-picker-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.character-picker .stat-picker-option {
+  min-height: 48px;
+}
+@media (max-width: 700px) {
+  .character-picker input {
+    font-size: 16px;
+  }
+}

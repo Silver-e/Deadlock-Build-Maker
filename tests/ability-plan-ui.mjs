@@ -1,3 +1,4 @@
+import { selectCharacter, characterName } from "./character-picker-helper.mjs";
 import { chromium } from "playwright";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
@@ -31,9 +32,7 @@ try {
   await page
     .getByText("Choose a character above to plan ability unlocks and upgrades.")
     .waitFor();
-  await page
-    .getByLabel("Build character", { exact: true })
-    .selectOption("hero_inferno");
+  await selectCharacter(page, "hero_inferno");
   const hero = heroes.find((h) => h.id === "hero_inferno");
   const details = page.getByRole("region", {
     name: "Ability upgrades & imbues",
@@ -187,9 +186,7 @@ try {
   assert.deepEqual(await readOrder(), []);
   await page.getByRole("button", { name: "Undo", exact: true }).click();
   assert.deepEqual(await readOrder(), full);
-  await page
-    .getByLabel("Build character", { exact: true })
-    .selectOption("hero_atlas");
+  await selectCharacter(page, "hero_atlas");
   assert.deepEqual(await readOrder(), []);
   await page.getByRole("button", { name: "Undo", exact: true }).click();
   assert.deepEqual(await readOrder(), full);
@@ -208,9 +205,7 @@ try {
   });
   assert.ok(await scroll.evaluate((el) => el.scrollLeft > 0));
   await panel.screenshot({ path: "test-results/ability-plan-mobile.png" });
-  await page
-    .getByLabel("Build character", { exact: true })
-    .selectOption("hero_werewolf_transformed");
+  await selectCharacter(page, "hero_werewolf_transformed");
   await page
     .getByRole("table", { name: "Silver ability order", exact: true })
     .waitFor();

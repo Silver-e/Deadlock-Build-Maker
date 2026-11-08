@@ -1,3 +1,4 @@
+import { selectCharacter, characterName } from "./character-picker-helper.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { build, preview } from "vite";
@@ -30,8 +31,33 @@ try {
     return route.continue();
   });
   await page.goto(origin + base);
+  const character = page.getByRole("combobox", {
+    name: "Build character",
+    exact: true,
+  });
+  await character.fill("infer");
+  const infernus = page.getByRole("option", { name: "Infernus", exact: true });
+  assert.equal(await infernus.locator("img").count(), 1);
+  assert.ok(
+    await infernus
+      .locator("img")
+      .evaluate((img, prefix) => img.src.includes(prefix), base),
+  );
+  await character.press("ArrowDown");
+  await character.press("ArrowDown");
+  await character.press("Enter");
+  assert.equal(await character.inputValue(), "Infernus");
+  await character.fill("no such character");
+  await page.getByText("No characters match. Try another name.").waitFor();
+  await character.press("Escape");
+  assert.equal(await character.inputValue(), "Infernus");
+  await character.click();
+  await page
+    .getByRole("option", { name: "Choose a character", exact: true })
+    .click();
+  assert.equal(await character.inputValue(), "");
   await page.getByLabel("Build name", { exact: true }).fill("Pages smoke test");
-  await page.getByLabel("Build character").selectOption({ index: 1 });
+  await selectCharacter(page, "hero_atlas");
   await page
     .getByRole("navigation", { name: "Planner pages" })
     .getByRole("button", { name: "Abilities", exact: true })

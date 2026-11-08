@@ -1,7 +1,8 @@
 import { assetUrl } from "./assets.js";
 import React from "react";
-import { heroes, heroById, boonLevel, imbueTarget } from "./heroes";
+import { heroById, boonLevel, imbueTarget } from "./heroes";
 import { byId } from "./model";
+import CharacterPicker from "./CharacterPicker";
 
 export default function CharacterPanel({ draft, onChange }) {
   const hero = heroById[draft.heroId];
@@ -21,40 +22,29 @@ export default function CharacterPanel({ draft, onChange }) {
             alt=""
           />
         )}
-        <label className="character-select">
-          Character
-          <select
-            aria-label="Build character"
-            value={hero?.id || ""}
-            onChange={(e) => {
-              const next = {
-                ...draft,
-                heroId: e.target.value || null,
-                abilityRanks: {},
-                abilityOrder: [],
-                imbues: {},
-              };
-              next.imbues = Object.fromEntries(
-                imbuables
-                  .map((item) => [item.id, imbueTarget(next, item)])
-                  .filter(([, slot]) => slot),
-              );
-              onChange({
-                heroId: next.heroId,
-                abilityRanks: {},
-                abilityOrder: [],
-                imbues: next.imbues,
-              });
-            }}
-          >
-            <option value="">Choose a character</option>
-            {heroes.map((h) => (
-              <option key={h.id} value={h.id}>
-                {h.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        <CharacterPicker
+          value={hero?.id || ""}
+          onChange={(value) => {
+            const next = {
+              ...draft,
+              heroId: value || null,
+              abilityRanks: {},
+              abilityOrder: [],
+              imbues: {},
+            };
+            next.imbues = Object.fromEntries(
+              imbuables
+                .map((item) => [item.id, imbueTarget(next, item)])
+                .filter(([, slot]) => slot),
+            );
+            onChange({
+              heroId: next.heroId,
+              abilityRanks: {},
+              abilityOrder: [],
+              imbues: next.imbues,
+            });
+          }}
+        />
         {hero ? (
           <>
             <label className="boon-select">
