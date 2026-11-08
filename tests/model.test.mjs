@@ -111,6 +111,7 @@ test("new drafts use seven ordered categories with optional choices flagged", ()
         "Silence Wave",
         "Knockdown",
         "Cursed Relic",
+        "Focus Lens",
       ],
     ],
   );

@@ -86,6 +86,7 @@ const starterItems = {
     "upgrade_targeted_silence",
     "upgrade_target_stun",
     "upgrade_glitch",
+    "upgrade_focus_lens",
   ],
 };
 
