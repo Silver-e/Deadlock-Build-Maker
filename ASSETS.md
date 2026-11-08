@@ -65,6 +65,8 @@ The development-only `reference.jpg` is an in-game screenshot from https://media
 
 ## Character and ability artwork
 
+Silver's normal and transformed forms use distinct artwork. The transformed portrait is the unmodified [Silver (Transformed) card](https://cdn.deadlock.wiki/Silver_%28Transformed%29_card.png) from Deadlock Wiki, stored at `public/heroes/hero_werewolf_transformed.png`.
+
 `data/heroes.json` records every hero's wiki page and the exact original image URLs. `public/heroes/<hero-id>.png` contains the game's head portrait from `portraitSource`; `public/abilities/<hero-id>-<slot>.png` contains the original ability icon from each ability's `iconSource`. Both are sourced from the corresponding wiki hero card and downloaded without visual alteration by `scripts/sync-heroes.mjs`. Native per-property icons under `public/stat-icons/` retain `statIconSource` and the wiki's original CSS filter in each ability property. Origin text is embedded into the shipping PNG metadata as well. Artwork belongs to Valve or the respective owner; no generated hero or ability art is used.
 
 Hero statistics, ability descriptions, upgrade text and scaling definitions are adapted from Deadlock Wiki's HeroData, AbilityCards, AbilityData, Lang_en and rendered hero pages, under CC BY-SA 4.0, with sources retained in the dataset. The bundled dataset and text adaptations retain that license. The license does not cover Valve's game artwork.

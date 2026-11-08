@@ -22724,7 +22724,7 @@
     },
     {
       "id": "hero_werewolf",
-      "name": "Silver",
+      "name": "Silver (Normal)",
       "preview": false,
       "portrait": "/heroes/hero_werewolf.png",
       "portraitSource": "https://cdn.deadlock.wiki/Silver.png",
@@ -23505,7 +23505,7 @@
       "name": "Silver (Transformed)",
       "preview": false,
       "portrait": "/heroes/hero_werewolf_transformed.png",
-      "portraitSource": "https://cdn.deadlock.wiki/Silver.png",
+      "portraitSource": "https://cdn.deadlock.wiki/Silver_%28Transformed%29_card.png",
       "source": "https://deadlock.wiki/Silver",
       "base": {
         "AbilityResourceMax": 0,

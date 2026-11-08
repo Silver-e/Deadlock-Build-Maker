@@ -42,7 +42,10 @@ await Promise.all(
       const name = h.Name.replace(" (Transformed)", "");
       const source = `https://deadlock.wiki/${encodeURIComponent(name.replaceAll(" ", "_"))}`;
       const $ = load(await (await get(source)).text());
-      const filename = `${name.replaceAll(" ", "_")}.png`;
+      const filename =
+        id === "hero_werewolf_transformed"
+          ? "Silver_(Transformed)_card.png"
+          : `${name.replaceAll(" ", "_")}.png`;
       const portrait = $("img")
         .map((_, e) => $(e).attr("src"))
         .get()
@@ -169,7 +172,7 @@ await Promise.all(
       }
       heroes.push({
         id,
-        name: h.Name,
+        name: id === "hero_werewolf" ? "Silver (Normal)" : h.Name,
         preview: !!h.InDevelopment,
         portrait: `/heroes/${id}.png`,
         portraitSource,
