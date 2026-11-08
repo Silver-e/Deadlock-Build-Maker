@@ -632,6 +632,15 @@ function App() {
                     />
                     <div className="category-tools">
                       <button
+                        className="icon-button category-clear"
+                        disabled={!c.items.length}
+                        aria-label={`Clear all items from ${c.name}`}
+                        title="Clear all items (can be undone)"
+                        onClick={() => editCategory(c.id, { items: [] })}
+                      >
+                        Clear
+                      </button>
+                      <button
                         className="icon-button"
                         disabled={ci === 0}
                         aria-label={`Move ${c.name} up`}

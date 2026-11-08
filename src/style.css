@@ -354,6 +354,10 @@ main {
   min-width: 20px;
   min-height: 24px;
 }
+.category-tools .category-clear {
+  padding: 2px 6px;
+  font-size: 12px;
+}
 .category-description {
   width: 100%;
   background: transparent;
