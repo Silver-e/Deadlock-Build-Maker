@@ -100,13 +100,6 @@ export default function CharacterPicker({ value, onChange }) {
             }
           }}
         />
-        {heroById[value] && (
-          <img
-            className="character-picker-icon"
-            src={assetUrl(heroById[value].portrait)}
-            alt=""
-          />
-        )}
         <button
           type="button"
           className="stat-picker-control"
