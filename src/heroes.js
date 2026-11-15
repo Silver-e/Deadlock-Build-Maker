@@ -1,6 +1,7 @@
 import snapshot from "../data/heroes.json" with { type: "json" };
 import { byId, ancestors } from "./model.js";
 import { equippedStats, combine, combineStat, parseStat } from "./stats.js";
+import { equippedItemChanges } from "./itemScaling.js";
 
 export const heroes = snapshot.heroes;
 export const heroById = Object.fromEntries(heroes.map((h) => [h.id, h]));
@@ -389,9 +390,25 @@ export function itemComparison(draft, item) {
     ? []
     : draft.equipped.filter((id) => ancestors(item.id).has(id));
   const target = imbueTarget(draft, item);
+  const itemChanges = equippedItemChanges(
+    beforeIds,
+    afterIds,
+    characterStats(draft, beforeIds),
+    characterStats(draft, afterIds),
+    (equippedItem, useAfter) => {
+      if (equippedItem.name !== "Echo Shard") return 0;
+      const slot = imbueTarget(draft, equippedItem);
+      return (
+        (useAfter ? after : before)
+          .find((a) => a.slot === slot)
+          ?.properties.find((p) => p.Key === "AbilityCooldown")?.total || 0
+      );
+    },
+  );
   return {
     equipped,
     abilities,
+    itemChanges,
     replaced,
     target,
     hypothetical:

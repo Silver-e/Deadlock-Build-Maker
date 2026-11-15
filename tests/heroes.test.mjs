@@ -228,3 +228,118 @@ test("Paradox uses full-burst weapon scaling; melee conversions replace the old 
   near(prop(v, "3", "DamageHeavyMelee"), 40 + 0.6 * 116);
   near(prop(v, "3", "Damage"), 0);
 });
+
+test("item previews show global duration, range and Spirit changes on retained equipment", () => {
+  const hex = item("Slowing Hex");
+  const d = draft({ equipped: [hex.id] });
+  const changes = itemComparison(d, item("Superior Duration")).itemChanges;
+  const duration = changes
+    .find((i) => i.id === hex.id)
+    .changes.find((p) => p.label === "Duration");
+  near(duration.before, 3.5);
+  near(duration.after, 3.5 * 1.28);
+  assert.deepEqual(
+    itemComparison(d, item("Duration Extender")).itemChanges,
+    [],
+    "Ability imbues do not extend item effects",
+  );
+  const range = itemComparison(
+    d,
+    item("Greater Expansion"),
+  ).itemChanges[0].changes.find((p) => p.label === "Cast Range");
+  near(range.before, 25);
+  near(range.after, 32.5);
+  const healing = item("Healing Rite");
+  const hd = draft({ equipped: [healing.id], boons: 10 });
+  const scaled = itemComparison(
+    hd,
+    item("Extra Spirit"),
+  ).itemChanges[0].changes.find((p) => p.label === "Total HP Regen");
+  near(scaled.before, 300 + characterStats(hd).spirit * 1.1);
+  near(
+    scaled.after,
+    300 +
+      characterStats(hd, [...hd.equipped, item("Extra Spirit").id]).spirit *
+        1.1,
+  );
+});
+
+test("item cooldown previews distinguish item CDR, passive cooldowns and charge-up", () => {
+  const d = draft({
+    equipped: [
+      item("Slowing Hex").id,
+      item("Mystic Burst").id,
+      item("Spirit Strike").id,
+    ],
+  });
+  assert.ok(
+    itemComparison(d, item("Superior Cooldown")).itemChanges.every((i) =>
+      i.changes.every((p) => p.label !== "Cooldown"),
+    ),
+  );
+  const changes = itemComparison(d, item("Transcendent Cooldown")).itemChanges;
+  assert.ok(!changes.some((i) => i.name === "Mystic Burst"));
+  for (const name of ["Slowing Hex", "Spirit Strike"]) {
+    const cooldown = changes
+      .find((i) => i.name === name)
+      .changes.find((p) => p.label === "Cooldown");
+    near(cooldown.before, item(name).cooldown);
+    near(cooldown.after, item(name).cooldown * 0.75);
+  }
+});
+
+test("equipped removal comparisons retain stacking and exclude consumed components", () => {
+  const duration = item("Superior Duration"),
+    hex = item("Slowing Hex");
+  const d = draft({ equipped: [duration.id, hex.id, item("Magic Carpet").id] });
+  const change = itemComparison(d, duration)
+    .itemChanges.find((i) => i.id === hex.id)
+    .changes.find((p) => p.label === "Duration");
+  near(change.before, 3.5 * 1.15);
+  near(change.after, 3.5 * (1 + 1 - 0.85 * 0.72));
+  const component = item("Compress Cooldown");
+  const upgrade = itemComparison(
+    draft({ equipped: [component.id, hex.id] }),
+    item("Superior Cooldown"),
+  );
+  assert.ok(!upgrade.itemChanges.some((i) => i.id === component.id));
+});
+
+test("Echo Shard cooldown includes changes to its imbued ability cooldown", () => {
+  const echo = item("Echo Shard");
+  const d = draft({ equipped: [echo.id], imbues: { [echo.id]: "1" } });
+  const change = itemComparison(d, item("Superior Cooldown"))
+    .itemChanges.find((i) => i.id === echo.id)
+    .changes.find((p) => p.label === "Cooldown");
+  near(change.before, 30 + 25);
+  near(change.after, 30 + 25 * 0.8);
+});
+
+test("item effect previews preserve percent units and combine Spirit with global range", () => {
+  const decay = item("Decay");
+  const d = draft({ equipped: [decay.id] });
+  const changes = itemComparison(d, item("Greater Expansion")).itemChanges.find(
+    (i) => i.id === decay.id,
+  ).changes;
+  const range = changes.find((p) => p.label === "Cast Range");
+  const spirit = characterStats(d, [
+    ...d.equipped,
+    item("Greater Expansion").id,
+  ]).spirit;
+  near(range.after, (20 + 0.1 * spirit) * 1.3);
+  assert.equal(range.unit, "m");
+  assert.equal(changes.find((p) => p.label === "DPS Bleed Damage").unit, "%");
+  const reverb = itemComparison(
+    draft({ equipped: [item("Mystic Reverb").id] }),
+    item("Superior Duration"),
+  );
+  assert.ok(
+    reverb.itemChanges.every((i) =>
+      i.changes.every((p) => p.label !== "Delay Duration"),
+    ),
+  );
+  assert.deepEqual(
+    itemComparison(draft(), item("Superior Duration")).itemChanges,
+    [],
+  );
+});

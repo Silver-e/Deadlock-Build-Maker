@@ -87,9 +87,50 @@ export default function AbilityPreview({ draft, item }) {
               Item effects are listed above.
             </p>
           )}
+          <section aria-label="Equipped item changes">
+            <h4 className="equipped-changes-title">Equipped item changes</h4>
+            {comparison.itemChanges.length ? (
+              comparison.itemChanges.map((equipment) => (
+                <div className="ability-change" key={equipment.id}>
+                  <h5>
+                    <img src={assetUrl(equipment.icon)} alt="" />
+                    {equipment.name}
+                  </h5>
+                  <dl>
+                    {equipment.changes.map((prop) => (
+                      <div key={prop.Key}>
+                        <dt>
+                          <StatIcon stat={prop.label} size={14} />
+                          {prop.label}
+                        </dt>
+                        <dd>
+                          <span>
+                            {statNumber(prop.before, prop.unit, false)}
+                          </span>
+                          <span aria-hidden="true">→</span>
+                          <strong>
+                            {statNumber(prop.after, prop.unit, false)}
+                          </strong>
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              ))
+            ) : (
+              <p className="comparison-note">
+                No changes to other equipped item values.
+              </p>
+            )}
+            <p className="comparison-note">
+              Retained equipment only. Item cooldown reduction is separate from
+              ability cooldown reduction. Conditional bonuses, fixed delays and
+              immunity timers are excluded.
+            </p>
+          </section>
           <p className="comparison-footnote">
-            Before enemy resistance. Triggered bonuses and item damage procs are
-            excluded.
+            Before enemy resistance. Item effect values are shown per trigger;
+            item damage procs are not added to character ability damage.
           </p>
         </>
       )}

@@ -309,6 +309,9 @@
 .ability-change {
   margin-top: 16px;
 }
+.ability-preview .equipped-changes-title {
+  margin-top: 20px;
+}
 .ability-change h5 {
   display: flex;
   align-items: center;
